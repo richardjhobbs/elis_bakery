@@ -17,6 +17,7 @@ interface OrderRow {
   id: string;
   collection_day: string;
   payment_status: PaymentStatus;
+  paid_at: string | null;
   notes: string | null;
   created_at: string;
   customer: { name: string; whatsapp_number: string };
@@ -41,7 +42,7 @@ export default async function OrderDashboardPage({
   const { data: rawOrders } = await supabase
     .from("order")
     .select(
-      "id, collection_day, payment_status, notes, created_at, customer:customer_id(name, whatsapp_number), order_item(quantity, product:product_id(name, price))"
+      "id, collection_day, payment_status, paid_at, notes, created_at, customer:customer_id(name, whatsapp_number), order_item(quantity, product:product_id(name, price))"
     )
     .eq("week_id", params.weekId)
     .order("created_at");

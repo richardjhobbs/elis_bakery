@@ -14,10 +14,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { addProduct, updateProduct } from "@/lib/actions/week-actions";
-import { useState } from "react";
+import {
+  addProduct,
+  updateProduct,
+  uploadProductImage,
+} from "@/lib/actions/week-actions";
+import { useState, useRef } from "react";
 import type { Product } from "@/lib/types/database";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, ImageIcon, X } from "lucide-react";
 
 interface ProductFormProps {
   weekId: string;
@@ -33,11 +37,37 @@ export function ProductFormDialog({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(
+    product?.image_url || null
+  );
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const isEditing = !!product;
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const fd = new FormData();
+    fd.set("file", file);
+    const result = await uploadProductImage(fd);
+
+    if (result.error) {
+      setError(result.error);
+    } else if (result.url) {
+      setImageUrl(result.url);
+    }
+    setUploading(false);
+  }
 
   async function handleSubmit(formData: FormData) {
     setLoading(true);
     setError(null);
+
+    if (imageUrl) {
+      formData.set("image_url", imageUrl);
+    }
 
     let result;
     if (isEditing && product) {
@@ -56,8 +86,16 @@ export function ProductFormDialog({
     }
   }
 
+  function handleOpenChange(isOpen: boolean) {
+    setOpen(isOpen);
+    if (isOpen) {
+      setImageUrl(product?.image_url || null);
+      setError(null);
+    }
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger
         render={
           isEditing ? (
@@ -91,6 +129,54 @@ export function ProductFormDialog({
           </DialogDescription>
         </DialogHeader>
         <form action={handleSubmit} className="space-y-4">
+          {/* Image upload */}
+          <div className="space-y-2">
+            <Label>Photo</Label>
+            <div className="flex items-center gap-3">
+              {imageUrl ? (
+                <div className="relative h-16 w-16 rounded-lg overflow-hidden border">
+                  <img
+                    src={imageUrl}
+                    alt="Product"
+                    className="h-full w-full object-cover"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setImageUrl(null);
+                      if (fileInputRef.current) fileInputRef.current.value = "";
+                    }}
+                    className="absolute top-0.5 right-0.5 bg-black/50 rounded-full p-0.5 text-white hover:bg-black/70"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ) : (
+                <div className="h-16 w-16 rounded-lg border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
+                  <ImageIcon className="h-6 w-6 text-muted-foreground/50" />
+                </div>
+              )}
+              <div>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={uploading}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  {uploading ? "Uploading..." : imageUrl ? "Change" : "Upload"}
+                </Button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
+              </div>
+            </div>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="name">Name</Label>
             <Input
@@ -157,7 +243,7 @@ export function ProductFormDialog({
             <Button
               type="submit"
               className="bg-brown-700 hover:bg-brown-800 text-cream-50"
-              disabled={loading}
+              disabled={loading || uploading}
             >
               {loading
                 ? "Saving..."

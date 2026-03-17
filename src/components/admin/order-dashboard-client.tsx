@@ -18,6 +18,7 @@ interface OrderRow {
   id: string;
   collection_day: string;
   payment_status: PaymentStatus;
+  paid_at: string | null;
   notes: string | null;
   created_at: string;
   customer: { name: string; whatsapp_number: string };
@@ -187,6 +188,11 @@ export function OrderDashboardClient({
                             weekId={weekId}
                             currentStatus={order.payment_status}
                           />
+                          {order.paid_at && (
+                            <span className="text-xs text-green-600">
+                              {new Date(order.paid_at).toLocaleDateString("en-SG", { day: "numeric", month: "short" })}
+                            </span>
+                          )}
                         </div>
                         <a
                           href={formatWhatsAppLink(

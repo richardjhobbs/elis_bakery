@@ -94,9 +94,16 @@ export async function updateOrderPaymentStatus(
     }
   }
 
+  const updateData: Record<string, unknown> = { payment_status: paymentStatus };
+  if (paymentStatus === "paid") {
+    updateData.paid_at = new Date().toISOString();
+  } else {
+    updateData.paid_at = null;
+  }
+
   const { error } = await supabase
     .from("order")
-    .update({ payment_status: paymentStatus })
+    .update(updateData)
     .eq("id", orderId);
 
   if (error) return { error: error.message };

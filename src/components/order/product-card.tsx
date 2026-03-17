@@ -24,6 +24,23 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <Card className={currentQty > 0 ? "ring-2 ring-terracotta-400/50" : ""}>
       <CardContent className="p-4">
+        {/* Product image */}
+        <div className="relative w-full h-36 rounded-lg overflow-hidden mb-3 bg-cream-100">
+          {product.image_url ? (
+            <img
+              src={product.image_url}
+              alt={product.name}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-cream-100 to-cream-200">
+              <span className="font-display text-2xl text-brown-400/70 italic">
+                Just Imagine!
+              </span>
+            </div>
+          )}
+        </div>
+
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0 flex-1">
             <h3 className="font-semibold text-brown-800 text-lg">

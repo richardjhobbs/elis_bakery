@@ -17,6 +17,7 @@ export type Product = {
   unit_label: string;
   max_qty: number | null;
   display_order: number;
+  image_url: string | null;
   created_at: string;
 };
 
@@ -36,6 +37,7 @@ export type Order = {
   customer_id: string;
   collection_day: "friday" | "saturday";
   payment_status: "pending" | "paid" | "on_account";
+  paid_at: string | null;
   notes: string | null;
   created_at: string;
 };
