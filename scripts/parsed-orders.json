@@ -1,0 +1,753 @@
+{
+  "weeks": [
+    {
+      "name": "9 January 2026",
+      "collection_day": "friday",
+      "products": [
+        {
+          "name": "Sourdough",
+          "total_qty": 4
+        },
+        {
+          "name": "Focaccia",
+          "total_qty": 2
+        },
+        {
+          "name": "Pizza Dough",
+          "total_qty": 19
+        },
+        {
+          "name": "Burger Buns",
+          "total_qty": 27
+        },
+        {
+          "name": "Tarte au Citron",
+          "total_qty": 2
+        }
+      ],
+      "orders": [
+        {
+          "customer_name": "Geraldine Taylor",
+          "items": [
+            {
+              "product": "Burger Buns",
+              "quantity": 10
+            },
+            {
+              "product": "Tarte au Citron",
+              "quantity": 1
+            }
+          ],
+          "total": "$82",
+          "status": "PAID"
+        },
+        {
+          "customer_name": "Mandy Noel",
+          "items": [
+            {
+              "product": "Focaccia",
+              "quantity": 1
+            },
+            {
+              "product": "Burger Buns",
+              "quantity": 6
+            },
+            {
+              "product": "Tarte au Citron",
+              "quantity": 1
+            }
+          ],
+          "total": "$87.20",
+          "status": "PAID"
+        },
+        {
+          "customer_name": "Georgie",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 3
+            }
+          ],
+          "total": "$12",
+          "status": "check with Wendy"
+        },
+        {
+          "customer_name": "Varun",
+          "items": [
+            {
+              "product": "Sourdough",
+              "quantity": 1
+            },
+            {
+              "product": "Pizza Dough",
+              "quantity": 4
+            }
+          ],
+          "total": "$27",
+          "status": "PAID"
+        },
+        {
+          "customer_name": "Kate",
+          "items": [
+            {
+              "product": "Sourdough",
+              "quantity": 1
+            },
+            {
+              "product": "Pizza Dough",
+              "quantity": 6
+            }
+          ],
+          "total": "$35",
+          "status": "on account"
+        },
+        {
+          "customer_name": "Susan Prakasam",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 2
+            },
+            {
+              "product": "Burger Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$21.20",
+          "status": "PAID"
+        },
+        {
+          "customer_name": "Olya",
+          "items": [
+            {
+              "product": "Focaccia",
+              "quantity": 1
+            },
+            {
+              "product": "Pizza Dough",
+              "quantity": 2
+            },
+            {
+              "product": "Burger Buns",
+              "quantity": 2
+            }
+          ],
+          "total": "$26.40",
+          "status": "PAID"
+        },
+        {
+          "customer_name": "Karolina",
+          "items": [
+            {
+              "product": "Sourdough",
+              "quantity": 2
+            }
+          ],
+          "total": "$22.00",
+          "status": "PAID"
+        },
+        {
+          "customer_name": "Gracie",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 2
+            },
+            {
+              "product": "Burger Buns",
+              "quantity": 3
+            }
+          ],
+          "total": "$14.60",
+          "status": "PAID"
+        }
+      ]
+    },
+    {
+      "name": "16 January 2026",
+      "collection_day": "friday",
+      "products": [
+        {
+          "name": "Focaccia - Regular (toms + Garlic)",
+          "total_qty": 1
+        },
+        {
+          "name": "Pizza Dough",
+          "total_qty": 14
+        },
+        {
+          "name": "Burger Buns",
+          "total_qty": 6
+        },
+        {
+          "name": "Fougasse",
+          "total_qty": 1
+        },
+        {
+          "name": "Banana Choc Muffins",
+          "total_qty": 8
+        }
+      ],
+      "orders": [
+        {
+          "customer_name": "Minnie",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 6
+            }
+          ],
+          "total": "$24"
+        },
+        {
+          "customer_name": "Ayesha Durante",
+          "items": [
+            {
+              "product": "Focaccia - Regular (toms + Garlic)",
+              "quantity": 1
+            }
+          ],
+          "total": "$14"
+        },
+        {
+          "customer_name": "Georgie",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 3
+            },
+            {
+              "product": "Fougasse",
+              "quantity": 1
+            }
+          ],
+          "total": "$18"
+        },
+        {
+          "customer_name": "Alex Derham",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 5
+            }
+          ],
+          "total": "$20"
+        },
+        {
+          "customer_name": "Lisa",
+          "items": [
+            {
+              "product": "Burger Buns",
+              "quantity": 6
+            },
+            {
+              "product": "Banana Choc Muffins",
+              "quantity": 8
+            }
+          ],
+          "total": "$41.20"
+        }
+      ]
+    },
+    {
+      "name": "23 January 2026",
+      "collection_day": "friday",
+      "products": [
+        {
+          "name": "Sourdough",
+          "total_qty": 2
+        },
+        {
+          "name": "Focaccia - Regular (toms + Garlic)",
+          "total_qty": 0
+        },
+        {
+          "name": "Pizza Dough",
+          "total_qty": 5
+        },
+        {
+          "name": "Burger Buns",
+          "total_qty": 8
+        },
+        {
+          "name": "Fougasse",
+          "total_qty": 2
+        }
+      ],
+      "orders": [
+        {
+          "customer_name": "Mandy Noel",
+          "items": [
+            {
+              "product": "Burger Buns",
+              "quantity": 8
+            }
+          ],
+          "total": "$17.60"
+        },
+        {
+          "customer_name": "Georgie",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 5
+            },
+            {
+              "product": "Fougasse",
+              "quantity": 1
+            }
+          ],
+          "total": "$26"
+        },
+        {
+          "customer_name": "AA Sg",
+          "items": [
+            {
+              "product": "Sourdough",
+              "quantity": 1
+            },
+            {
+              "product": "Fougasse",
+              "quantity": 1
+            }
+          ],
+          "total": "$17"
+        },
+        {
+          "customer_name": "Sandra",
+          "items": [
+            {
+              "product": "Sourdough",
+              "quantity": 1
+            }
+          ],
+          "total": "$11"
+        },
+        {
+          "customer_name": "Susan",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 4
+            },
+            {
+              "product": "Burger Buns",
+              "quantity": 8
+            }
+          ],
+          "total": "$33.60"
+        }
+      ]
+    },
+    {
+      "name": "30 January 2026",
+      "collection_day": "saturday",
+      "products": [
+        {
+          "name": "Sourdough",
+          "total_qty": 0
+        },
+        {
+          "name": "Focaccia Regular",
+          "total_qty": 0
+        },
+        {
+          "name": "Focaccia Sun Toms + Olives",
+          "total_qty": 0
+        },
+        {
+          "name": "Pizza Dough",
+          "total_qty": 4
+        },
+        {
+          "name": "Fougasse",
+          "total_qty": 2
+        },
+        {
+          "name": "Burger Buns",
+          "total_qty": 6
+        },
+        {
+          "name": "Banana Choc Muffins",
+          "total_qty": 0
+        },
+        {
+          "name": "Mince Pies",
+          "total_qty": 0
+        },
+        {
+          "name": "Tarte au Citron",
+          "total_qty": 0
+        }
+      ],
+      "orders": [
+        {
+          "customer_name": "Olya",
+          "items": [
+            {
+              "product": "Fougasse",
+              "quantity": 2
+            },
+            {
+              "product": "Burger Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$25.20"
+        },
+        {
+          "customer_name": "Georgie",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 4
+            }
+          ],
+          "total": "$16"
+        }
+      ]
+    },
+    {
+      "name": "6 February 2026",
+      "collection_day": "friday",
+      "products": [
+        {
+          "name": "Sourdough",
+          "total_qty": 3
+        },
+        {
+          "name": "Focaccia - Regular (toms, Garlic, Rose)",
+          "total_qty": 2
+        },
+        {
+          "name": "Pizza Dough",
+          "total_qty": 12
+        },
+        {
+          "name": "Burger Buns",
+          "total_qty": 10
+        },
+        {
+          "name": "Butter Bean Dip",
+          "total_qty": 1
+        }
+      ],
+      "orders": [
+        {
+          "customer_name": "Sammy Loder",
+          "items": [
+            {
+              "product": "Sourdough",
+              "quantity": 1
+            },
+            {
+              "product": "Pizza Dough",
+              "quantity": 4
+            },
+            {
+              "product": "Butter Bean Dip",
+              "quantity": 1
+            }
+          ],
+          "total": "$37"
+        },
+        {
+          "customer_name": "Georgie",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 4
+            }
+          ],
+          "total": "$16"
+        },
+        {
+          "customer_name": "Geraldine Taylor",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 4
+            },
+            {
+              "product": "Burger Buns",
+              "quantity": 10
+            }
+          ],
+          "total": "$38"
+        },
+        {
+          "customer_name": "Shruti Thakar",
+          "items": [
+            {
+              "product": "Focaccia - Regular (toms, Garlic, Rose)",
+              "quantity": 2
+            }
+          ],
+          "total": "$28"
+        },
+        {
+          "customer_name": "Jill Pitcher",
+          "items": [
+            {
+              "product": "Sourdough",
+              "quantity": 2
+            }
+          ],
+          "total": "$22.00"
+        }
+      ]
+    },
+    {
+      "name": "13 February 2026",
+      "collection_day": "friday",
+      "products": [
+        {
+          "name": "Focaccia - Regular (toms, Garlic, Rose)",
+          "total_qty": 0
+        },
+        {
+          "name": "Pizza Dough",
+          "total_qty": 10
+        },
+        {
+          "name": "Burger Buns",
+          "total_qty": 0
+        },
+        {
+          "name": "Fougasse",
+          "total_qty": 3
+        }
+      ],
+      "orders": [
+        {
+          "customer_name": "Georgie",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 6
+            },
+            {
+              "product": "Fougasse",
+              "quantity": 1
+            }
+          ],
+          "total": "$30"
+        },
+        {
+          "customer_name": "Purna",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 4
+            },
+            {
+              "product": "Fougasse",
+              "quantity": 1
+            }
+          ],
+          "total": "$22"
+        },
+        {
+          "customer_name": "Teresa",
+          "items": [
+            {
+              "product": "Fougasse",
+              "quantity": 1
+            }
+          ],
+          "total": "$0"
+        }
+      ]
+    },
+    {
+      "name": "20 March 2026",
+      "collection_day": "friday",
+      "products": [
+        {
+          "name": "Sourdough",
+          "total_qty": 2
+        },
+        {
+          "name": "Pizza Dough",
+          "total_qty": 24
+        },
+        {
+          "name": "Burger Buns",
+          "total_qty": 10
+        },
+        {
+          "name": "Fougasse",
+          "total_qty": 1
+        },
+        {
+          "name": "Hot X Buns",
+          "total_qty": 72
+        }
+      ],
+      "orders": [
+        {
+          "customer_name": "Gracie",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 1
+            },
+            {
+              "product": "Hot X Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$14"
+        },
+        {
+          "customer_name": "Oiying",
+          "items": [
+            {
+              "product": "Hot X Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$10"
+        },
+        {
+          "customer_name": "Georgie",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 6
+            },
+            {
+              "product": "Fougasse",
+              "quantity": 1
+            },
+            {
+              "product": "Hot X Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$40"
+        },
+        {
+          "customer_name": "Marian Janmaat",
+          "items": [
+            {
+              "product": "Burger Buns",
+              "quantity": 10
+            },
+            {
+              "product": "Hot X Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$32"
+        },
+        {
+          "customer_name": "Neha",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 1
+            },
+            {
+              "product": "Hot X Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$14"
+        },
+        {
+          "customer_name": "Purna",
+          "items": [
+            {
+              "product": "Hot X Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$10"
+        },
+        {
+          "customer_name": "Alex Derham",
+          "items": [
+            {
+              "product": "Hot X Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$10"
+        },
+        {
+          "customer_name": "Susan Prakasam",
+          "items": [
+            {
+              "product": "Hot X Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$10"
+        },
+        {
+          "customer_name": "Olivia Nicaise",
+          "items": [
+            {
+              "product": "Hot X Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$10"
+        },
+        {
+          "customer_name": "Michelle",
+          "items": [
+            {
+              "product": "Sourdough",
+              "quantity": 1
+            }
+          ],
+          "total": "$11"
+        },
+        {
+          "customer_name": "Teresa",
+          "items": [
+            {
+              "product": "Sourdough",
+              "quantity": 1
+            },
+            {
+              "product": "Hot X Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$21"
+        },
+        {
+          "customer_name": "Sherry",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 12
+            },
+            {
+              "product": "Hot X Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$58"
+        },
+        {
+          "customer_name": "Sammy",
+          "items": [
+            {
+              "product": "Pizza Dough",
+              "quantity": 4
+            },
+            {
+              "product": "Hot X Buns",
+              "quantity": 6
+            }
+          ],
+          "total": "$26"
+        }
+      ]
+    }
+  ]
+}
