@@ -65,6 +65,17 @@ export default async function RevenuePage() {
       .map(([name, qty]) => `${name} ×${qty}`)
       .join(", ");
 
+    // Parse actual date from label for correct sorting
+    let parsedDate = week.created_at;
+    const dateMatch = week.label.match(/(\d{1,2})\s+(\w+)\s*(\d{4})?/);
+    if (dateMatch) {
+      const year = dateMatch[3] || new Date().getFullYear().toString();
+      const d = new Date(`${dateMatch[2]} ${dateMatch[1]}, ${year}`);
+      if (!isNaN(d.getTime())) {
+        parsedDate = d.toISOString();
+      }
+    }
+
     return {
       label: week.label,
       orderCount,
@@ -73,32 +84,57 @@ export default async function RevenuePage() {
       collected,
       outstanding: gross - collected,
       created_at: week.created_at,
+      parsedDate,
     };
   });
 
-  // Monthly rollup
+  // Sort weekly stats by parsed date, most recent first
+  weeklyStats.sort((a, b) => new Date(b.parsedDate).getTime() - new Date(a.parsedDate).getTime());
+
+  // Monthly rollup — parse actual date from the week label (e.g. "Week of 9 January 2026")
   const monthlyMap = new Map<
     string,
-    { weeks: number; orders: number; gross: number; collected: number }
+    { sortKey: string; weeks: number; orders: number; gross: number; collected: number }
   >();
   weeklyStats.forEach((w) => {
-    const month = new Date(w.created_at).toLocaleDateString("en-SG", {
-      month: "long",
-      year: "numeric",
-    });
+    // Try to parse date from label like "Week of 9 January 2026" or "week of 26 March"
+    const match = w.label.match(/(\d{1,2})\s+(\w+)\s*(\d{4})?/);
+    let month: string;
+    let sortKey: string;
+    if (match) {
+      const year = match[3] || new Date().getFullYear().toString();
+      const parsed = new Date(`${match[2]} ${match[1]}, ${year}`);
+      if (!isNaN(parsed.getTime())) {
+        month = parsed.toLocaleDateString("en-SG", { month: "long", year: "numeric" });
+        sortKey = `${parsed.getFullYear()}-${String(parsed.getMonth() + 1).padStart(2, "0")}`;
+      } else {
+        month = new Date(w.created_at).toLocaleDateString("en-SG", { month: "long", year: "numeric" });
+        sortKey = w.created_at.slice(0, 7);
+      }
+    } else {
+      month = new Date(w.created_at).toLocaleDateString("en-SG", { month: "long", year: "numeric" });
+      sortKey = w.created_at.slice(0, 7);
+    }
     const existing = monthlyMap.get(month) || {
+      sortKey,
       weeks: 0,
       orders: 0,
       gross: 0,
       collected: 0,
     };
     monthlyMap.set(month, {
+      sortKey,
       weeks: existing.weeks + 1,
       orders: existing.orders + w.orderCount,
       gross: existing.gross + w.gross,
       collected: existing.collected + w.collected,
     });
   });
+
+  // Sort monthly entries chronologically
+  const sortedMonthly = Array.from(monthlyMap.entries()).sort(
+    ([, a], [, b]) => b.sortKey.localeCompare(a.sortKey)
+  );
 
   // All-time
   const allTime = weeklyStats.reduce(
@@ -229,7 +265,7 @@ export default async function RevenuePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {monthlyMap.size === 0 ? (
+              {sortedMonthly.length === 0 ? (
                 <TableRow>
                   <TableCell
                     colSpan={5}
@@ -239,7 +275,7 @@ export default async function RevenuePage() {
                   </TableCell>
                 </TableRow>
               ) : (
-                Array.from(monthlyMap.entries()).map(([month, stats]) => (
+                sortedMonthly.map(([month, stats]) => (
                   <TableRow key={month}>
                     <TableCell className="font-medium">{month}</TableCell>
                     <TableCell className="text-right">
