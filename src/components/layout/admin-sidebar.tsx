@@ -7,6 +7,7 @@ import {
   CalendarDays,
   Users,
   DollarSign,
+  MessageCircle,
   Menu,
 } from "lucide-react";
 import { useState } from "react";
@@ -17,6 +18,7 @@ const navItems = [
   { href: "/admin/weeks", label: "Weeks", icon: CalendarDays },
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/revenue", label: "Revenue", icon: DollarSign },
+  { href: "/admin/broadcast", label: "Broadcast", icon: MessageCircle },
 ];
 
 function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
