@@ -3,8 +3,17 @@
 import { useState } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { formatCurrency } from "@/lib/utils";
-import { Copy, Check, MessageCircle, ExternalLink } from "lucide-react";
+import {
+  Copy,
+  Check,
+  MessageCircle,
+  ExternalLink,
+  Monitor,
+  Megaphone,
+  Share2,
+} from "lucide-react";
 
 type Product = {
   id: string;
@@ -23,9 +32,12 @@ type WeekWithProducts = {
   products: Product[];
 };
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://elis-bakery.vercel.app";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://elis-bakery.vercel.app";
 
-function generateMessage(week: WeekWithProducts): string {
+type TemplateType = "announcement" | "marketing";
+
+function generateAnnouncement(week: WeekWithProducts): string {
   const orderUrl = `${SITE_URL}/order/${week.id}`;
   const collectionDays = week.collection_days
     .map((d) => d.charAt(0).toUpperCase() + d.slice(1))
@@ -35,19 +47,107 @@ function generateMessage(week: WeekWithProducts): string {
     .sort((a, b) => a.display_order - b.display_order)
     .map((p) => {
       const desc = p.description ? ` - ${p.description}` : "";
-      return `  ${p.name} (${formatCurrency(p.price)}/${p.unit_label})${desc}`;
+      return `🧁 ${p.name} (${formatCurrency(p.price)}/${p.unit_label})${desc}`;
     })
     .join("\n");
 
-  return `Hi everyone! This week's bakes are ready to order:\n\n${productLines}\n\nCollection: ${collectionDays}\n\nOrder here: ${orderUrl}\n\nThanks! Eli`;
+  return `Hi everyone! 🎉 This week's bakes are ready to order:\n\n${productLines}\n\n📅 Collection: ${collectionDays}\n\n👉 Order here: ${orderUrl}\n\nThanks! Eli 🤗`;
+}
+
+function generateMarketing(week: WeekWithProducts): string {
+  const orderUrl = `${SITE_URL}/order/${week.id}`;
+
+  return `Hey! Know someone who loves freshly baked treats? 🧁\n\nEli's Artisan Bakery does weekly bakes — handmade sourdough, pastries, and more!\n\nThis week's menu is live. Share the love and send them the link:\n\n👉 ${orderUrl}\n\nThanks for spreading the word! ❤️`;
+}
+
+function MessageEditor({
+  message,
+  onMessageChange,
+  onReset,
+  showReset,
+  label,
+}: {
+  message: string;
+  onMessageChange: (msg: string) => void;
+  onReset: () => void;
+  showReset: boolean;
+  label: string;
+}) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(message);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleWhatsAppOpen = () => {
+    const encoded = encodeURIComponent(message);
+    window.open(`https://wa.me/?text=${encoded}`, "_blank");
+  };
+
+  return (
+    <Card>
+      <CardHeader>
+        <h2 className="text-lg font-medium text-brown-800">{label}</h2>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <textarea
+          value={message}
+          onChange={(e) => onMessageChange(e.target.value)}
+          rows={10}
+          className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-ring"
+        />
+
+        {showReset && (
+          <button
+            onClick={onReset}
+            className="text-xs text-muted-foreground hover:text-foreground underline"
+          >
+            Reset to auto-generated message
+          </button>
+        )}
+
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Button
+            onClick={handleCopy}
+            variant="outline"
+            className="flex-1 gap-2"
+          >
+            {copied ? (
+              <>
+                <Check className="h-4 w-4 text-green-600" />
+                Copied!
+              </>
+            ) : (
+              <>
+                <Copy className="h-4 w-4" />
+                Copy Message
+              </>
+            )}
+          </Button>
+
+          <Button
+            onClick={handleWhatsAppOpen}
+            className="flex-1 gap-2 bg-[#25D366] hover:bg-[#1da851] text-white"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Open in WhatsApp
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
 }
 
 export function BroadcastClient({ weeks }: { weeks: WeekWithProducts[] }) {
   const [selectedWeekId, setSelectedWeekId] = useState<string>(
     weeks[0]?.id || ""
   );
-  const [copied, setCopied] = useState(false);
-  const [customMessage, setCustomMessage] = useState<string | null>(null);
+  const [template, setTemplate] = useState<TemplateType>("announcement");
+  const [customMessages, setCustomMessages] = useState<
+    Record<string, Record<TemplateType, string | null>>
+  >({});
 
   const selectedWeek = weeks.find((w) => w.id === selectedWeekId);
 
@@ -67,27 +167,79 @@ export function BroadcastClient({ weeks }: { weeks: WeekWithProducts[] }) {
     );
   }
 
-  const message = customMessage ?? (selectedWeek ? generateMessage(selectedWeek) : "");
-
-  const handleCopy = async () => {
-    await navigator.clipboard.writeText(message);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const getAutoMessage = (week: WeekWithProducts, tmpl: TemplateType) => {
+    switch (tmpl) {
+      case "announcement":
+        return generateAnnouncement(week);
+      case "marketing":
+        return generateMarketing(week);
+    }
   };
 
-  const handleWhatsAppOpen = () => {
-    // Opens WhatsApp with the message pre-filled
-    // Using wa.me without a number opens "choose contact" in WhatsApp
-    const encoded = encodeURIComponent(message);
-    window.open(`https://wa.me/?text=${encoded}`, "_blank");
+  const currentCustom =
+    customMessages[selectedWeekId]?.[template] ?? null;
+  const message = selectedWeek
+    ? currentCustom ?? getAutoMessage(selectedWeek, template)
+    : "";
+
+  const setCustomMessage = (msg: string) => {
+    setCustomMessages((prev) => ({
+      ...prev,
+      [selectedWeekId]: {
+        ...prev[selectedWeekId],
+        [template]: msg,
+      },
+    }));
   };
 
-  const handleReset = () => {
-    setCustomMessage(null);
+  const resetMessage = () => {
+    setCustomMessages((prev) => ({
+      ...prev,
+      [selectedWeekId]: {
+        ...prev[selectedWeekId],
+        [template]: null,
+      },
+    }));
+  };
+
+  const templateLabels: Record<TemplateType, { label: string; icon: React.ReactNode }> = {
+    announcement: { label: "Weekly Announcement", icon: <Megaphone className="h-4 w-4" /> },
+    marketing: { label: "Share & Refer", icon: <Share2 className="h-4 w-4" /> },
   };
 
   return (
     <div className="space-y-4">
+      {/* WhatsApp Desktop link */}
+      <Card>
+        <CardContent className="pt-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-[#25D366]/10 flex items-center justify-center">
+                <Monitor className="h-5 w-5 text-[#25D366]" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-brown-800">
+                  WhatsApp Desktop
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  Open WhatsApp on this computer
+                </p>
+              </div>
+            </div>
+            <a
+              href="https://web.whatsapp.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button variant="outline" size="sm" className="gap-2">
+                <ExternalLink className="h-3.5 w-3.5" />
+                Open
+              </Button>
+            </a>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Week selector */}
       {weeks.length > 1 && (
         <Card>
@@ -99,7 +251,6 @@ export function BroadcastClient({ weeks }: { weeks: WeekWithProducts[] }) {
               value={selectedWeekId}
               onChange={(e) => {
                 setSelectedWeekId(e.target.value);
-                setCustomMessage(null);
               }}
               className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
             >
@@ -113,89 +264,32 @@ export function BroadcastClient({ weeks }: { weeks: WeekWithProducts[] }) {
         </Card>
       )}
 
-      {/* Message preview & editor */}
-      <Card>
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <h2 className="text-lg font-medium text-brown-800">
-              Message Preview
-            </h2>
-            {selectedWeek && (
-              <span className="text-xs text-muted-foreground">
-                {selectedWeek.products.length} products
+      {/* Template tabs */}
+      <Tabs
+        value={template}
+        onValueChange={(v) => setTemplate(v as TemplateType)}
+      >
+        <TabsList className="w-full">
+          {Object.entries(templateLabels).map(([key, { label, icon }]) => (
+            <TabsTrigger key={key} value={key} className="flex-1 gap-1.5">
+              {icon}
+              <span className="hidden sm:inline">{label}</span>
+              <span className="sm:hidden">
+                {key === "announcement" ? "Announce" : "Share"}
               </span>
-            )}
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <textarea
-            value={message}
-            onChange={(e) => setCustomMessage(e.target.value)}
-            rows={12}
-            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm font-mono leading-relaxed resize-y focus:outline-none focus:ring-2 focus:ring-ring"
-          />
+            </TabsTrigger>
+          ))}
+        </TabsList>
+      </Tabs>
 
-          {customMessage !== null && (
-            <button
-              onClick={handleReset}
-              className="text-xs text-muted-foreground hover:text-foreground underline"
-            >
-              Reset to auto-generated message
-            </button>
-          )}
-
-          {/* Action buttons */}
-          <div className="flex flex-col sm:flex-row gap-3">
-            <Button
-              onClick={handleCopy}
-              variant="outline"
-              className="flex-1 gap-2"
-            >
-              {copied ? (
-                <>
-                  <Check className="h-4 w-4 text-green-600" />
-                  Copied!
-                </>
-              ) : (
-                <>
-                  <Copy className="h-4 w-4" />
-                  Copy Message
-                </>
-              )}
-            </Button>
-
-            <Button
-              onClick={handleWhatsAppOpen}
-              className="flex-1 gap-2 bg-[#25D366] hover:bg-[#1da851] text-white"
-            >
-              <MessageCircle className="h-4 w-4" />
-              Open in WhatsApp
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Instructions */}
-      <Card>
-        <CardContent className="pt-4">
-          <h3 className="text-sm font-medium text-brown-800 mb-2">
-            How to broadcast
-          </h3>
-          <ol className="text-sm text-muted-foreground space-y-1.5 list-decimal list-inside">
-            <li>Review and edit the message above if needed</li>
-            <li>
-              Click{" "}
-              <strong className="text-foreground">Open in WhatsApp</strong> to
-              launch WhatsApp with the message pre-filled
-            </li>
-            <li>Select your broadcast list or group and send</li>
-            <li>
-              Or click <strong className="text-foreground">Copy Message</strong>{" "}
-              to paste it manually
-            </li>
-          </ol>
-        </CardContent>
-      </Card>
+      {/* Message editor */}
+      <MessageEditor
+        message={message}
+        onMessageChange={setCustomMessage}
+        onReset={resetMessage}
+        showReset={currentCustom !== null}
+        label={templateLabels[template].label}
+      />
 
       {/* Order link */}
       {selectedWeek && (
@@ -224,6 +318,28 @@ export function BroadcastClient({ weeks }: { weeks: WeekWithProducts[] }) {
           </CardContent>
         </Card>
       )}
+
+      {/* Instructions */}
+      <Card>
+        <CardContent className="pt-4">
+          <h3 className="text-sm font-medium text-brown-800 mb-2">
+            How to broadcast
+          </h3>
+          <ol className="text-sm text-muted-foreground space-y-1.5 list-decimal list-inside">
+            <li>Open WhatsApp Desktop above (keeps messages in sync with your phone)</li>
+            <li>Review and edit the message if needed</li>
+            <li>
+              Click{" "}
+              <strong className="text-foreground">Open in WhatsApp</strong> to
+              send to your broadcast list or group
+            </li>
+            <li>
+              Or <strong className="text-foreground">Copy Message</strong>{" "}
+              to paste manually
+            </li>
+          </ol>
+        </CardContent>
+      </Card>
     </div>
   );
 }

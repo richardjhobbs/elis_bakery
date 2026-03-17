@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
-import { formatCurrency, formatWhatsAppLink } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils";
 import { PaymentStatusSelect } from "@/components/admin/payment-status-select";
 import { OrderNotes } from "@/components/admin/order-notes";
-import { MessageCircle } from "lucide-react";
+import { WhatsAppOrderButtons } from "@/components/admin/whatsapp-order-buttons";
 import type { PaymentStatus } from "@/lib/constants";
 
 interface OrderItemRow {
@@ -194,17 +194,6 @@ export function OrderDashboardClient({
                             </span>
                           )}
                         </div>
-                        <a
-                          href={formatWhatsAppLink(
-                            order.customer.whatsapp_number
-                          )}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs text-green-600 hover:underline"
-                        >
-                          <MessageCircle className="h-3 w-3" />
-                          +65 {order.customer.whatsapp_number}
-                        </a>
                         <p className="text-sm text-muted-foreground mt-1">
                           {itemsSummary}
                         </p>
@@ -216,6 +205,14 @@ export function OrderDashboardClient({
                             {order.collection_day}
                           </span>
                         </div>
+                        <WhatsAppOrderButtons
+                          customerName={order.customer.name}
+                          whatsappNumber={order.customer.whatsapp_number}
+                          items={order.order_item}
+                          collectionDay={order.collection_day}
+                          paymentStatus={order.payment_status}
+                          total={orderTotal}
+                        />
                       </div>
                       <div className="shrink-0">
                         <OrderNotes
