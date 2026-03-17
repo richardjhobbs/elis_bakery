@@ -30,12 +30,102 @@ interface Props {
   collectionDays: string[];
 }
 
+interface ConsolidatedProduct {
+  name: string;
+  price: number;
+  totalQty: number;
+  customers: { name: string; quantity: number; collectionDay: string }[];
+}
+
+function ConsolidatedView({ orders }: { orders: OrderRow[] }) {
+  const productMap = new Map<string, ConsolidatedProduct>();
+
+  orders.forEach((order) => {
+    order.order_item.forEach((item) => {
+      const key = item.product.name;
+      if (!productMap.has(key)) {
+        productMap.set(key, {
+          name: item.product.name,
+          price: item.product.price,
+          totalQty: 0,
+          customers: [],
+        });
+      }
+      const entry = productMap.get(key)!;
+      entry.totalQty += item.quantity;
+      entry.customers.push({
+        name: order.customer.name,
+        quantity: item.quantity,
+        collectionDay: order.collection_day,
+      });
+    });
+  });
+
+  const products = Array.from(productMap.values()).sort((a, b) =>
+    a.name.localeCompare(b.name)
+  );
+
+  if (products.length === 0) {
+    return (
+      <Card>
+        <CardContent className="py-8 text-center text-muted-foreground">
+          No orders yet.
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-3">
+      {products.map((product) => (
+        <Card key={product.name}>
+          <CardContent className="p-4">
+            <div className="flex items-baseline justify-between mb-2">
+              <h3 className="font-semibold text-brown-800">{product.name}</h3>
+              <div className="text-right">
+                <span className="text-lg font-bold text-terracotta-600">
+                  {product.totalQty}
+                </span>
+                <span className="text-sm text-muted-foreground ml-1">
+                  total
+                </span>
+                <span className="text-sm text-muted-foreground ml-2">
+                  ({formatCurrency(product.price)} each)
+                </span>
+              </div>
+            </div>
+            <div className="border-t pt-2 space-y-1">
+              {product.customers.map((c, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between text-sm"
+                >
+                  <span className="text-foreground">{c.name}</span>
+                  <div className="flex items-center gap-3">
+                    <span className="text-xs text-muted-foreground capitalize">
+                      {c.collectionDay}
+                    </span>
+                    <span className="font-medium w-8 text-right">
+                      ×{c.quantity}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
 export function OrderDashboardClient({
   orders,
   weekId,
   collectionDays,
 }: Props) {
   const [activeTab, setActiveTab] = useState("all");
+  const [view, setView] = useState<"orders" | "consolidated">("orders");
 
   const filteredOrders =
     activeTab === "all"
@@ -44,17 +134,29 @@ export function OrderDashboardClient({
 
   return (
     <div>
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="all">All</TabsTrigger>
-          {collectionDays.map((day) => (
-            <TabsTrigger key={day} value={day} className="capitalize">
-              {day}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+      <div className="flex items-center justify-between mb-4">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList>
+            <TabsTrigger value="all">All</TabsTrigger>
+            {collectionDays.map((day) => (
+              <TabsTrigger key={day} value={day} className="capitalize">
+                {day}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
+        <Tabs value={view} onValueChange={(v) => setView(v as "orders" | "consolidated")}>
+          <TabsList>
+            <TabsTrigger value="orders">By Order</TabsTrigger>
+            <TabsTrigger value="consolidated">Consolidated</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
 
-        <div className="mt-4 space-y-3">
+      {view === "consolidated" ? (
+        <ConsolidatedView orders={filteredOrders} />
+      ) : (
+        <div className="space-y-3">
           {filteredOrders.length === 0 ? (
             <Card>
               <CardContent className="py-8 text-center text-muted-foreground">
@@ -123,7 +225,7 @@ export function OrderDashboardClient({
             })
           )}
         </div>
-      </Tabs>
+      )}
     </div>
   );
 }
