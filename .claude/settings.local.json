@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "mcp__095f48f7-e7c5-4cc4-b060-9da9aa8447a3__search_vercel_documentation",
+      "Bash(npx create-next-app@14 . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git)",
+      "Bash(where npm:*)",
+      "Bash(where npx:*)",
+      "Bash(export PATH=\"$PATH:/c/Program Files/nodejs:/c/Users/richa/AppData/Roaming/npm\")",
+      "Bash(npx --version)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Program Files \\(x86\\)/**)",
+      "Read(//c/Users/richa/**)",
+      "Read(//c//**)",
+      "Bash(find /c -maxdepth 3 -name node.exe)",
+      "Bash(cmd.exe /c \"where node\")",
+      "Bash(cmd.exe /c \"where npm\")",
+      "Bash(export PATH=\"$PATH:/c/Program Files/nodejs\")",
+      "Bash(npm --version)",
+      "Bash(npx create-next-app@14 temp_scaffold --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --no-git)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn-ui@latest init -y)",
+      "Bash(npx shadcn@latest init -d)"
+    ]
+  }
+}
