@@ -1,5 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 
@@ -17,6 +18,14 @@ export default async function HomePage() {
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <main className="flex-1 flex flex-col items-center justify-center px-4 text-center">
+        <Image
+          src="/logo.jpg"
+          alt="Eli's Artisan Bakery logo"
+          width={160}
+          height={160}
+          className="rounded-full mb-6"
+          priority
+        />
         <h1 className="font-display text-6xl md:text-7xl text-brown-700 mb-3">
           Eli&apos;s Artisan Bakery
         </h1>
