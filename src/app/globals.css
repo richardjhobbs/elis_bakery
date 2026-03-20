@@ -4,26 +4,26 @@
 
 @layer base {
   :root {
-    /* Warm bakery palette */
-    --background: 36 60% 97%;
-    --foreground: 30 30% 15%;
-    --card: 36 50% 99%;
-    --card-foreground: 30 30% 15%;
-    --popover: 36 50% 99%;
-    --popover-foreground: 30 30% 15%;
-    --primary: 25 50% 28%;
-    --primary-foreground: 36 60% 97%;
-    --secondary: 30 25% 90%;
-    --secondary-foreground: 25 40% 22%;
-    --muted: 33 20% 92%;
-    --muted-foreground: 25 15% 40%;
-    --accent: 16 55% 50%;
-    --accent-foreground: 36 80% 97%;
+    /* Teal bakery palette — Pantone 5483C */
+    --background: 160 20% 97%;
+    --foreground: 180 20% 15%;
+    --card: 160 15% 99%;
+    --card-foreground: 180 20% 15%;
+    --popover: 160 15% 99%;
+    --popover-foreground: 180 20% 15%;
+    --primary: 182 30% 35%;
+    --primary-foreground: 160 30% 97%;
+    --secondary: 170 15% 90%;
+    --secondary-foreground: 182 30% 22%;
+    --muted: 170 10% 92%;
+    --muted-foreground: 180 10% 40%;
+    --accent: 182 22% 53%;
+    --accent-foreground: 160 30% 97%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 30 20% 86%;
-    --input: 30 20% 86%;
-    --ring: 16 55% 50%;
+    --border: 170 12% 86%;
+    --input: 170 12% 86%;
+    --ring: 182 22% 53%;
     --radius: 0.625rem;
   }
 

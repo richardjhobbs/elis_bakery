@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Caveat, Inter } from "next/font/google";
+import { Cinzel, Inter } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
@@ -9,7 +9,7 @@ const inter = Inter({
   variable: "--font-sans",
 });
 
-const caveat = Caveat({
+const cinzel = Cinzel({
   subsets: ["latin"],
   variable: "--font-display",
 });
@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn(inter.variable, caveat.variable)}>
+    <html lang="en" className={cn(inter.variable, cinzel.variable)}>
       <body className="font-sans antialiased">
         {children}
         <Toaster />
