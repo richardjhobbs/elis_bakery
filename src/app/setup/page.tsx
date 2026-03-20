@@ -7,16 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { signIn } from "@/lib/actions/auth-actions";
+import { setupAccount } from "@/lib/actions/auth-actions";
 
-export default function LoginPage() {
+export default function SetupPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(formData: FormData) {
     setLoading(true);
     setError(null);
-    const result = await signIn(formData);
+    const result = await setupAccount(formData);
     if (result?.error) {
       setError(result.error);
       setLoading(false);
@@ -36,11 +36,11 @@ export default function LoginPage() {
               className="rounded-full"
             />
           </div>
-          <h1 className="font-display text-4xl text-brown-700">
-            Eli&apos;s Artisan Bakery
+          <h1 className="font-display text-3xl text-brown-700">
+            Set Up Your Account
           </h1>
           <p className="text-muted-foreground text-sm">
-            Sign in to manage your bakery
+            Create your admin password
           </p>
         </CardHeader>
         <CardContent>
@@ -51,19 +51,31 @@ export default function LoginPage() {
                 id="email"
                 name="email"
                 type="email"
-                placeholder="eli@bakery.com"
+                placeholder="your@email.com"
                 required
                 autoComplete="email"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">Create Password</Label>
               <Input
                 id="password"
                 name="password"
                 type="password"
                 required
-                autoComplete="current-password"
+                minLength={6}
+                autoComplete="new-password"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                required
+                minLength={6}
+                autoComplete="new-password"
               />
             </div>
             {error && (
@@ -74,13 +86,13 @@ export default function LoginPage() {
               className="w-full bg-brown-700 hover:bg-brown-800 text-cream-50"
               disabled={loading}
             >
-              {loading ? "Signing in..." : "Sign In"}
+              {loading ? "Setting up..." : "Create Account"}
             </Button>
           </form>
           <p className="text-center text-sm text-muted-foreground mt-4">
-            First time?{" "}
-            <Link href="/setup" className="text-brown-700 hover:underline font-medium">
-              Set up your account
+            Already have an account?{" "}
+            <Link href="/login" className="text-brown-700 hover:underline font-medium">
+              Sign in
             </Link>
           </p>
         </CardContent>
