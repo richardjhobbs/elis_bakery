@@ -13,7 +13,7 @@ export default async function WeeksPage() {
   const { data: weeks } = await supabase
     .from("week")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("closes_at", { ascending: false, nullsFirst: false });
 
   return (
     <div className="space-y-6">
