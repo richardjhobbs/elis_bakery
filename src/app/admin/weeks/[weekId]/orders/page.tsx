@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils";
 import { OrderDashboardClient } from "@/components/admin/order-dashboard-client";
 import type { PaymentStatus } from "@/lib/constants";
+import { BakeSummaryButton } from "@/components/admin/bake-summary-button";
 
 interface OrderItemRow {
   quantity: number;
@@ -82,16 +83,19 @@ export default async function OrderDashboardPage({
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center gap-3">
-        <Link
-          href={`/admin/weeks/${params.weekId}`}
-          className="text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Link>
-        <h1 className="text-2xl font-semibold text-brown-800">
-          Orders — {week.label}
-        </h1>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/admin/weeks/${params.weekId}`}
+            className="text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Link>
+          <h1 className="text-2xl font-semibold text-brown-800">
+            Orders — {week.label}
+          </h1>
+        </div>
+        <BakeSummaryButton weekId={params.weekId} />
       </div>
 
       {/* Summary bar */}
