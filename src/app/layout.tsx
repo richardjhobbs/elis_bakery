@@ -18,6 +18,10 @@ export const metadata: Metadata = {
   title: "Eli's Artisan Bakery",
   description:
     "Fresh artisan bakes made with love. Order online for weekly collection.",
+  icons: {
+    icon: "/icon-192.png",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
