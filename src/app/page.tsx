@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { InstagramLink } from "@/components/ui/instagram-link";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -55,7 +56,10 @@ export default async function HomePage() {
       </main>
 
       <footer className="text-center py-6 text-sm text-muted-foreground">
-        &copy; {new Date().getFullYear()} Eli&apos;s Artisan Bakery
+        <div className="flex items-center justify-center gap-3 mb-1">
+          <span>&copy; {new Date().getFullYear()} Eli&apos;s Artisan Bakery</span>
+          <InstagramLink />
+        </div>
       </footer>
     </div>
   );

@@ -4,6 +4,7 @@ import { PublicHeader } from "@/components/layout/public-header";
 import { OrderFormClient } from "@/components/order/order-form-client";
 import { formatDate } from "@/lib/utils";
 import type { Product } from "@/lib/types/database";
+import { InstagramLink } from "@/components/ui/instagram-link";
 
 export default async function OrderPage({
   params,
@@ -44,10 +45,10 @@ export default async function OrderPage({
     .order("display_order");
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-screen bg-background pb-24 flex flex-col">
       <PublicHeader />
 
-      <div className="max-w-lg mx-auto px-4">
+      <div className="max-w-lg mx-auto px-4 flex-1">
         {/* Week info */}
         <div className="text-center mb-6">
           <h2 className="text-xl font-semibold text-brown-800">
@@ -66,6 +67,10 @@ export default async function OrderPage({
           collectionDays={week.collection_days}
         />
       </div>
+
+      <footer className="text-center py-6">
+        <InstagramLink />
+      </footer>
     </div>
   );
 }

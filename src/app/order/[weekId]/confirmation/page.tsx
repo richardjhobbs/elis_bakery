@@ -4,6 +4,7 @@ import { PublicHeader } from "@/components/layout/public-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
 import { CheckCircle, MessageCircle, CreditCard } from "lucide-react";
+import { InstagramLink } from "@/components/ui/instagram-link";
 
 interface OrderItemRow {
   quantity: number;
@@ -142,6 +143,10 @@ export default async function ConfirmationPage({
         <p className="text-center text-sm text-muted-foreground mt-6">
           We&apos;ll confirm your order and let you know pickup details! 🧁
         </p>
+
+        <div className="text-center mt-4">
+          <InstagramLink />
+        </div>
       </div>
     </div>
   );
