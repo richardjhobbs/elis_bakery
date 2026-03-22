@@ -53,29 +53,36 @@ export async function setupAccount(formData: FormData) {
 
   const supabase = await createClient();
 
-  // Check if account already exists by trying to sign in
-  const { error: signInError } = await supabase.auth.signInWithPassword({
-    email,
-    password: "__check_exists__",
-  });
-
-  // If error is "Invalid login credentials" the user exists
-  // If error is something else or no error, handle accordingly
-  if (signInError && signInError.message === "Invalid login credentials") {
-    return { error: "An account with this email already exists. Please sign in instead." };
-  }
-
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
   });
 
   if (error) {
-    // User may already exist
-    if (error.message.includes("already registered") || error.message.includes("already been registered")) {
-      return { error: "An account with this email already exists. Please sign in instead." };
+    if (
+      error.message.includes("already registered") ||
+      error.message.includes("already been registered") ||
+      error.message.includes("User already registered")
+    ) {
+      return {
+        error:
+          "An account with this email already exists. Please sign in instead.",
+      };
     }
     return { error: error.message };
+  }
+
+  // Supabase may return a user with identities=[] if the email is taken
+  // but email confirmations are disabled — treat as already exists
+  if (
+    data?.user &&
+    data.user.identities &&
+    data.user.identities.length === 0
+  ) {
+    return {
+      error:
+        "An account with this email already exists. Please sign in instead.",
+    };
   }
 
   redirect("/admin");
