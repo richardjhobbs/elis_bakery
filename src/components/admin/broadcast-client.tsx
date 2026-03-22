@@ -62,7 +62,7 @@ function generateAnnouncement(week: WeekWithProducts): string {
     .filter(Boolean)
     .join("\n\n");
 
-  return `Hi everyone! 🎉 This week's bakes are ready to order:\n\n${sections}\n\n📅 Collection: ${collectionDays}\n\n👉 Order here: ${orderUrl}\n\nThanks! Eli 🤗`;
+  return `Hi everyone! 🎉 This week's bakes are ready to order:\n\n${sections}\n\n📅 Collection: ${collectionDays}\n\n👉 Order here: ${orderUrl}\n\nThanks! Teresa and Wendy 👩‍🍳`;
 }
 
 function generateMarketing(week: WeekWithProducts): string {
