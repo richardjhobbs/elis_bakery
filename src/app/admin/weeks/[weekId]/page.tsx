@@ -10,7 +10,11 @@ import { DeleteProductButton } from "@/components/admin/delete-product-button";
 import { CopyProductsButton } from "@/components/admin/copy-products-button";
 import { WeekEditForm } from "@/components/admin/week-edit-form";
 import { formatCurrency } from "@/lib/utils";
-import type { Product } from "@/lib/types/database";
+import {
+  CATEGORY_LABELS,
+  type Product,
+  type ProductCategory,
+} from "@/lib/types/database";
 
 export default async function WeekDetailPage({
   params,
@@ -96,6 +100,9 @@ export default async function WeekDetailPage({
                     <div className="flex items-center gap-2">
                       <span className="font-medium text-brown-800">
                         {product.name}
+                      </span>
+                      <span className="text-xs bg-cream-200 text-brown-600 px-1.5 py-0.5 rounded">
+                        {CATEGORY_LABELS[product.category as ProductCategory] || "Other"}
                       </span>
                       <span className="text-sm text-muted-foreground">
                         {formatCurrency(product.price)} {product.unit_label}

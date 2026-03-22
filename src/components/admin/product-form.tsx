@@ -20,7 +20,11 @@ import {
   uploadProductImage,
 } from "@/lib/actions/week-actions";
 import { useState, useRef } from "react";
-import type { Product } from "@/lib/types/database";
+import {
+  PRODUCT_CATEGORIES,
+  CATEGORY_LABELS,
+  type Product,
+} from "@/lib/types/database";
 import { Plus, Pencil, ImageIcon, X } from "lucide-react";
 
 interface ProductFormProps {
@@ -186,6 +190,21 @@ export function ProductFormDialog({
               placeholder="e.g. Sourdough Loaf"
               required
             />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="category">Category</Label>
+            <select
+              id="category"
+              name="category"
+              defaultValue={product?.category || "other"}
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-base shadow-xs focus:outline-none focus:ring-2 focus:ring-ring"
+            >
+              {PRODUCT_CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {CATEGORY_LABELS[cat]}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="space-y-2">
             <Label htmlFor="description">Description</Label>

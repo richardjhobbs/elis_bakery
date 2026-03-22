@@ -8,6 +8,24 @@ export type Week = {
   created_at: string;
 };
 
+export const PRODUCT_CATEGORIES = [
+  "dips",
+  "breads",
+  "savoury",
+  "sweet",
+  "other",
+] as const;
+
+export type ProductCategory = (typeof PRODUCT_CATEGORIES)[number];
+
+export const CATEGORY_LABELS: Record<ProductCategory, string> = {
+  dips: "Dips",
+  breads: "Breads",
+  savoury: "Savoury",
+  sweet: "Sweet",
+  other: "Other",
+};
+
 export type Product = {
   id: string;
   week_id: string;
@@ -18,6 +36,7 @@ export type Product = {
   max_qty: number | null;
   display_order: number;
   image_url: string | null;
+  category: ProductCategory;
   created_at: string;
 };
 

@@ -1,16 +1,72 @@
 import { createClient } from "@/lib/supabase/server";
 import { NextRequest, NextResponse } from "next/server";
 import jsPDF from "jspdf";
+import { PRODUCT_CATEGORIES, CATEGORY_LABELS } from "@/lib/types/database";
+import type { ProductCategory } from "@/lib/types/database";
 
 interface OrderItemRow {
   quantity: number;
-  product: { name: string; price: number };
+  product: { name: string; price: number; category: string };
 }
 
 interface OrderRow {
   id: string;
   collection_day: string;
   order_item: OrderItemRow[];
+}
+
+type ItemInfo = { qty: number; category: ProductCategory };
+
+function sortByCategory(entries: [string, ItemInfo][]) {
+  return entries.sort((a, b) => {
+    const catA = PRODUCT_CATEGORIES.indexOf(a[1].category as ProductCategory);
+    const catB = PRODUCT_CATEGORIES.indexOf(b[1].category as ProductCategory);
+    if (catA !== catB) return catA - catB;
+    return a[0].localeCompare(b[0]);
+  });
+}
+
+function renderItems(
+  doc: jsPDF,
+  items: [string, ItemInfo][],
+  startY: number,
+  pageWidth: number
+): number {
+  let y = startY;
+  let currentCat = "";
+
+  items.forEach(([name, info]) => {
+    // Category sub-heading
+    if (info.category !== currentCat) {
+      currentCat = info.category;
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(61, 117, 119);
+      doc.text(
+        CATEGORY_LABELS[info.category as ProductCategory] || info.category,
+        22,
+        y
+      );
+      y += 6;
+    }
+
+    // Item line
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(30, 30, 30);
+    doc.text(name, 28, y);
+    doc.setFont("helvetica", "bold");
+    doc.text(`× ${info.qty}`, pageWidth - 30, y, { align: "right" });
+
+    // Checkbox
+    doc.setDrawColor(180, 180, 180);
+    doc.setLineWidth(0.3);
+    doc.rect(pageWidth - 25, y - 4, 5, 5);
+
+    y += 8;
+  });
+
+  return y;
 }
 
 export async function GET(request: NextRequest) {
@@ -41,11 +97,11 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Week not found" }, { status: 404 });
   }
 
-  // Fetch orders with items
+  // Fetch orders with items (including category)
   const { data: rawOrders } = await supabase
     .from("order")
     .select(
-      "id, collection_day, order_item(quantity, product:product_id(name, price))"
+      "id, collection_day, order_item(quantity, product:product_id(name, price, category))"
     )
     .eq("week_id", weekId)
     .order("created_at");
@@ -53,8 +109,8 @@ export async function GET(request: NextRequest) {
   const orders = (rawOrders || []) as unknown as OrderRow[];
 
   // Build summary data: totals per product, split by day
-  const dayTotals: Record<string, Record<string, number>> = {};
-  const overallTotals: Record<string, number> = {};
+  const dayTotals: Record<string, Record<string, ItemInfo>> = {};
+  const overallTotals: Record<string, ItemInfo> = {};
 
   orders.forEach((order) => {
     const day = order.collection_day || "Unspecified";
@@ -62,8 +118,17 @@ export async function GET(request: NextRequest) {
 
     order.order_item.forEach((item) => {
       const name = item.product.name;
-      dayTotals[day][name] = (dayTotals[day][name] || 0) + item.quantity;
-      overallTotals[name] = (overallTotals[name] || 0) + item.quantity;
+      const cat = (item.product.category || "other") as ProductCategory;
+
+      if (!dayTotals[day][name]) {
+        dayTotals[day][name] = { qty: 0, category: cat };
+      }
+      dayTotals[day][name].qty += item.quantity;
+
+      if (!overallTotals[name]) {
+        overallTotals[name] = { qty: 0, category: cat };
+      }
+      overallTotals[name].qty += item.quantity;
     });
   });
 
@@ -78,7 +143,7 @@ export async function GET(request: NextRequest) {
   // Header
   doc.setFontSize(22);
   doc.setFont("helvetica", "bold");
-  doc.setTextColor(61, 117, 119); // teal
+  doc.setTextColor(61, 117, 119);
   doc.text("Eli's Artisan Bakery", pageWidth / 2, y, { align: "center" });
   y += 10;
 
@@ -109,9 +174,7 @@ export async function GET(request: NextRequest) {
   if (hasMultipleDays) {
     collectionDays.forEach((day) => {
       const items = dayTotals[day];
-      const sortedItems = Object.entries(items).sort((a, b) =>
-        a[0].localeCompare(b[0])
-      );
+      const sorted = sortByCategory(Object.entries(items));
 
       // Day heading
       doc.setFontSize(14);
@@ -124,24 +187,7 @@ export async function GET(request: NextRequest) {
       doc.line(20, y, pageWidth - 20, y);
       y += 7;
 
-      // Items — large, easy to read
-      doc.setFontSize(14);
-      doc.setTextColor(30, 30, 30);
-
-      sortedItems.forEach(([name, qty]) => {
-        doc.setFont("helvetica", "normal");
-        doc.text(name, 25, y);
-        doc.setFont("helvetica", "bold");
-        doc.text(`× ${qty}`, pageWidth - 30, y, { align: "right" });
-
-        // Checkbox
-        doc.setDrawColor(180, 180, 180);
-        doc.setLineWidth(0.3);
-        doc.rect(pageWidth - 25, y - 4, 5, 5);
-
-        y += 8;
-      });
-
+      y = renderItems(doc, sorted, y, pageWidth);
       y += 4;
     });
 
@@ -163,26 +209,8 @@ export async function GET(request: NextRequest) {
   doc.line(20, y, pageWidth - 20, y);
   y += 9;
 
-  const sortedOverall = Object.entries(overallTotals).sort((a, b) =>
-    a[0].localeCompare(b[0])
-  );
-
-  doc.setFontSize(16);
-  doc.setTextColor(30, 30, 30);
-
-  sortedOverall.forEach(([name, qty]) => {
-    doc.setFont("helvetica", "normal");
-    doc.text(name, 25, y);
-    doc.setFont("helvetica", "bold");
-    doc.text(`× ${qty}`, pageWidth - 30, y, { align: "right" });
-
-    // Checkbox
-    doc.setDrawColor(180, 180, 180);
-    doc.setLineWidth(0.3);
-    doc.rect(pageWidth - 25, y - 4, 5.5, 5.5);
-
-    y += 10;
-  });
+  const sortedOverall = sortByCategory(Object.entries(overallTotals));
+  y = renderItems(doc, sortedOverall, y, pageWidth);
 
   const pdfBuffer = Buffer.from(doc.output("arraybuffer"));
 
