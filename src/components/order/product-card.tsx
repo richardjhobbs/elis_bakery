@@ -37,7 +37,7 @@ export function ProductCard({ product, isSoldOut = false }: ProductCardProps) {
     >
       <CardContent className="p-4">
         {/* Product image */}
-        <div className="relative w-full h-36 rounded-lg overflow-hidden mb-3 bg-cream-100">
+        <div className="relative w-full h-48 rounded-lg overflow-hidden mb-3 bg-cream-100">
           {product.image_url ? (
             <img
               src={product.image_url}
