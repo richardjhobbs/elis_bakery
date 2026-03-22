@@ -43,7 +43,7 @@ const SITE_URL =
 type TemplateType = "announcement" | "marketing";
 
 function generateAnnouncement(week: WeekWithProducts): string {
-  const orderUrl = `${SITE_URL}/order/${week.id}`;
+  const orderUrl = SITE_URL;
   const collectionDays = week.collection_days
     .map((d) => d.charAt(0).toUpperCase() + d.slice(1))
     .join(" & ");
@@ -65,8 +65,9 @@ function generateAnnouncement(week: WeekWithProducts): string {
   return `Hi everyone! 🎉 This week's bakes are ready to order:\n\n${sections}\n\n📅 Collection: ${collectionDays}\n\n👉 Order here: ${orderUrl}\n\nThanks! Teresa and Wendy 👩‍🍳`;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function generateMarketing(week: WeekWithProducts): string {
-  const orderUrl = `${SITE_URL}/order/${week.id}`;
+  const orderUrl = SITE_URL;
 
   return `Hey! Know someone who loves freshly baked treats? 🧁\n\nEli's Artisan Bakery does weekly bakes — handmade sourdough, pastries, and more!\n\nThis week's menu is live. Share the love and send them the link:\n\n👉 ${orderUrl}\n\nThanks for spreading the word! ❤️`;
 }
