@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { InstagramLink } from "@/components/ui/instagram-link";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export default async function HomePage() {
   const supabase = await createClient();
@@ -17,7 +18,10 @@ export default async function HomePage() {
     .single();
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col relative">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <main className="flex-1 flex flex-col items-center justify-center px-4 text-center">
         <Image
           src="/logo.jpg"
