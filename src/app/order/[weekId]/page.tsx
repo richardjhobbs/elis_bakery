@@ -44,6 +44,25 @@ export default async function OrderPage({
     .eq("week_id", params.weekId)
     .order("display_order");
 
+  // Get total ordered quantities per product for sold-out detection
+  const { data: orderItems } = await supabase
+    .from("order_item")
+    .select("product_id, quantity, order:order_id!inner(week_id)")
+    .eq("order.week_id", params.weekId);
+
+  const orderedTotals: Record<string, number> = {};
+  (orderItems || []).forEach((item: { product_id: string; quantity: number }) => {
+    orderedTotals[item.product_id] = (orderedTotals[item.product_id] || 0) + item.quantity;
+  });
+
+  // Build list of sold-out product IDs
+  const soldOutIds = (products || [])
+    .filter(
+      (p: Product) =>
+        p.max_qty !== null && (orderedTotals[p.id] || 0) >= p.max_qty
+    )
+    .map((p: Product) => p.id);
+
   return (
     <div className="min-h-screen bg-background pb-24 flex flex-col">
       <PublicHeader />
@@ -65,6 +84,7 @@ export default async function OrderPage({
           weekId={params.weekId}
           products={(products || []) as Product[]}
           collectionDays={week.collection_days}
+          soldOutIds={soldOutIds}
         />
       </div>
 

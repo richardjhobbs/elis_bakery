@@ -14,14 +14,19 @@ import {
   Megaphone,
   Share2,
 } from "lucide-react";
+import {
+  PRODUCT_CATEGORIES,
+  CATEGORY_LABELS,
+  type ProductCategory,
+} from "@/lib/types/database";
 
 type Product = {
   id: string;
   name: string;
   price: number;
   unit_label: string;
-  description: string | null;
   display_order: number;
+  category: ProductCategory;
 };
 
 type WeekWithProducts = {
@@ -43,15 +48,21 @@ function generateAnnouncement(week: WeekWithProducts): string {
     .map((d) => d.charAt(0).toUpperCase() + d.slice(1))
     .join(" & ");
 
-  const productLines = [...week.products]
-    .sort((a, b) => a.display_order - b.display_order)
-    .map((p) => {
-      const desc = p.description ? ` - ${p.description}` : "";
-      return `🧁 ${p.name} (${formatCurrency(p.price)}/${p.unit_label})${desc}`;
-    })
-    .join("\n");
+  const sections = PRODUCT_CATEGORIES.map((cat) => {
+    const catProducts = week.products
+      .filter((p) => p.category === cat)
+      .sort((a, b) => a.display_order - b.display_order);
+    if (catProducts.length === 0) return "";
+    const header = `*${CATEGORY_LABELS[cat]}*`;
+    const lines = catProducts
+      .map((p) => `🧁 ${p.name} (${formatCurrency(p.price)}/${p.unit_label})`)
+      .join("\n");
+    return `${header}\n${lines}`;
+  })
+    .filter(Boolean)
+    .join("\n\n");
 
-  return `Hi everyone! 🎉 This week's bakes are ready to order:\n\n${productLines}\n\n📅 Collection: ${collectionDays}\n\n👉 Order here: ${orderUrl}\n\nThanks! Eli 🤗`;
+  return `Hi everyone! 🎉 This week's bakes are ready to order:\n\n${sections}\n\n📅 Collection: ${collectionDays}\n\n👉 Order here: ${orderUrl}\n\nThanks! Eli 🤗`;
 }
 
 function generateMarketing(week: WeekWithProducts): string {

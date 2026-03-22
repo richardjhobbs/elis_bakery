@@ -7,13 +7,17 @@ import { formatCurrency } from "@/lib/utils";
 import { Minus, Plus } from "lucide-react";
 import type { Product } from "@/lib/types/database";
 
-export function ProductCard({ product }: { product: Product }) {
+interface ProductCardProps {
+  product: Product;
+  isSoldOut?: boolean;
+}
+
+export function ProductCard({ product, isSoldOut = false }: ProductCardProps) {
   const { items, setQuantity } = useCart();
   const currentQty = items[product.id]?.quantity || 0;
   const lineTotal = currentQty * product.price;
 
   function increment() {
-    if (product.max_qty && currentQty >= product.max_qty) return;
     setQuantity(product.id, currentQty + 1, product.price, product.name);
   }
 
@@ -22,7 +26,15 @@ export function ProductCard({ product }: { product: Product }) {
   }
 
   return (
-    <Card className={currentQty > 0 ? "ring-2 ring-terracotta-400/50" : ""}>
+    <Card
+      className={
+        isSoldOut
+          ? "opacity-75"
+          : currentQty > 0
+            ? "ring-2 ring-terracotta-400/50"
+            : ""
+      }
+    >
       <CardContent className="p-4">
         {/* Product image */}
         <div className="relative w-full h-36 rounded-lg overflow-hidden mb-3 bg-cream-100">
@@ -30,12 +42,21 @@ export function ProductCard({ product }: { product: Product }) {
             <img
               src={product.image_url}
               alt={product.name}
-              className="w-full h-full object-cover"
+              className={`w-full h-full object-cover ${isSoldOut ? "grayscale" : ""}`}
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-cream-100 to-cream-200">
               <span className="font-display text-2xl text-brown-400/70 italic">
                 Just Imagine!
+              </span>
+            </div>
+          )}
+
+          {/* Sold out badge overlay */}
+          {isSoldOut && (
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <span className="bg-red-600 text-white font-bold text-sm uppercase px-4 py-1.5 rounded-full tracking-wide shadow-lg">
+                Sold Out
               </span>
             </div>
           )}
@@ -57,42 +78,36 @@ export function ProductCard({ product }: { product: Product }) {
                 {product.unit_label}
               </span>
             </p>
-            {product.max_qty && (
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Max {product.max_qty} per order
-              </p>
-            )}
           </div>
 
-          {/* Quantity selector */}
-          <div className="flex items-center gap-2 shrink-0">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-10 w-10 rounded-full"
-              onClick={decrement}
-              disabled={currentQty === 0}
-            >
-              <Minus className="h-4 w-4" />
-            </Button>
-            <span className="w-8 text-center font-semibold text-lg tabular-nums">
-              {currentQty}
-            </span>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-10 w-10 rounded-full"
-              onClick={increment}
-              disabled={
-                product.max_qty !== null && currentQty >= product.max_qty
-              }
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
+          {/* Quantity selector — hidden when sold out */}
+          {!isSoldOut && (
+            <div className="flex items-center gap-2 shrink-0">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-10 w-10 rounded-full"
+                onClick={decrement}
+                disabled={currentQty === 0}
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+              <span className="w-8 text-center font-semibold text-lg tabular-nums">
+                {currentQty}
+              </span>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-10 w-10 rounded-full"
+                onClick={increment}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
         </div>
 
-        {currentQty > 0 && (
+        {currentQty > 0 && !isSoldOut && (
           <div className="mt-2 text-right text-sm font-medium text-terracotta-600">
             {formatCurrency(lineTotal)}
           </div>

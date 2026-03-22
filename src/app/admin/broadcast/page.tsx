@@ -7,7 +7,7 @@ export default async function BroadcastPage() {
   // Get all open weeks with their products
   const { data: weeks } = await supabase
     .from("week")
-    .select("*, products:product(id, name, price, unit_label, description, display_order)")
+    .select("*, products:product(id, name, price, unit_label, display_order, category)")
     .in("status", ["open", "draft"])
     .order("created_at", { ascending: false });
 

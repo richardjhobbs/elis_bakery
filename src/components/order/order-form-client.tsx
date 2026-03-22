@@ -15,12 +15,14 @@ interface OrderFormClientProps {
   weekId: string;
   products: Product[];
   collectionDays: string[];
+  soldOutIds?: string[];
 }
 
 export function OrderFormClient({
   weekId,
   products,
   collectionDays,
+  soldOutIds = [],
 }: OrderFormClientProps) {
   const { setCollectionDay, reset } = useCart();
 
@@ -50,7 +52,11 @@ export function OrderFormClient({
               </h3>
               <div className="space-y-3">
                 {catProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    isSoldOut={soldOutIds.includes(product.id)}
+                  />
                 ))}
               </div>
             </div>
