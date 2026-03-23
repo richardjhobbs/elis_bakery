@@ -53,23 +53,7 @@ export default async function ConfirmationPage({
     0
   );
 
-  // Build WhatsApp message with full order details
-  const orderLines = orderItems
-    .map((item) => `${item.product.name} x${item.quantity}`)
-    .join("\n");
-  const whatsAppMessage = `Hi ${customerName}
-
-Thank you for your order this week:
-${orderLines}
-Total: ${formatCurrency(total)}
-
-Collection: Friday from 3pm to 5pm, at the usual address
-Payment: Please pay via PayNow to mobile no. 9614 2321 and reference your payment as "bakery goods".
-If possible, please send a screenshot when completed.
-
-Many thanks
-Wendy and Teresa
-Eli's Artisan Bakery`;
+  const whatsAppMessage = `Hi, it's ${customerName}. I've just placed an order. Looking forward to receiving my goodies!`;
 
   return (
     <div className="min-h-screen bg-background">

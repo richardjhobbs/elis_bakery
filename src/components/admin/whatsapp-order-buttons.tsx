@@ -38,7 +38,20 @@ function generateConfirmationMessage(
 
   const day = collectionDay.charAt(0).toUpperCase() + collectionDay.slice(1);
 
-  return `Hi ${customerName}! 😊\n\nThanks for your order:\n\n${itemLines}\n\nTotal: ${formatCurrency(total)}\n\n📅 Collection: ${day}\n\n💳 Payment: Please PayNow to complete your order. Send a screenshot when done!\n\nThanks! Eli 🤗`;
+  return `Hi ${customerName}
+
+Thank you for your order this week:
+${itemLines}
+
+Total: ${formatCurrency(total)}
+
+Collection: ${day} from 3pm to 5pm, at the usual address
+Payment: Please pay via PayNow to mobile no. 9614 2321 and reference your payment as "bakery goods".
+If possible, please send a screenshot when completed.
+
+Many thanks
+Wendy and Teresa
+Eli's Artisan Bakery`;
 }
 
 function generateThankYouMessage(
@@ -47,7 +60,15 @@ function generateThankYouMessage(
 ): string {
   const day = collectionDay.charAt(0).toUpperCase() + collectionDay.slice(1);
 
-  return `Hi ${customerName}! 🎉\n\nPayment received — thank you!\n\n📅 Your order will be ready for collection on ${day}.\n\nI'll message you with the pickup time and location details closer to the day.\n\nSee you soon! Eli 🤗`;
+  return `Hi ${customerName}
+
+Payment received — thank you!
+
+Your order will be ready for collection on ${day} from 3pm to 5pm, at the usual address.
+
+See you soon!
+Wendy and Teresa
+Eli's Artisan Bakery`;
 }
 
 function WhatsAppMessageSheet({
