@@ -50,6 +50,15 @@ export default async function OrderDashboardPage({
 
   const orders = (rawOrders || []) as unknown as OrderRow[];
 
+  // Fetch products for edit dialog
+  const { data: rawProducts } = await supabase
+    .from("product")
+    .select("id, name, price")
+    .eq("week_id", params.weekId)
+    .order("display_order");
+
+  const weekProducts = (rawProducts || []) as { id: string; name: string; price: number }[];
+
   // Calculate summary stats
   const totalOrders = orders.length;
   const totalRevenue = orders.reduce((sum, order) => {
@@ -140,6 +149,7 @@ export default async function OrderDashboardPage({
         orders={orders}
         weekId={params.weekId}
         collectionDays={week.collection_days}
+        weekProducts={weekProducts}
       />
     </div>
   );

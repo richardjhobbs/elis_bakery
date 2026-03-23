@@ -8,6 +8,8 @@ import { PaymentStatusSelect } from "@/components/admin/payment-status-select";
 import { OrderNotes } from "@/components/admin/order-notes";
 import { WhatsAppOrderButtons } from "@/components/admin/whatsapp-order-buttons";
 import type { PaymentStatus } from "@/lib/constants";
+import { DeleteOrderButton } from "@/components/admin/delete-order-button";
+import { EditOrderDialog } from "@/components/admin/edit-order-dialog";
 
 interface OrderItemRow {
   quantity: number;
@@ -25,10 +27,17 @@ interface OrderRow {
   order_item: OrderItemRow[];
 }
 
+interface WeekProduct {
+  id: string;
+  name: string;
+  price: number;
+}
+
 interface Props {
   orders: OrderRow[];
   weekId: string;
   collectionDays: string[];
+  weekProducts?: WeekProduct[];
 }
 
 interface ConsolidatedProduct {
@@ -124,6 +133,7 @@ export function OrderDashboardClient({
   orders,
   weekId,
   collectionDays,
+  weekProducts,
 }: Props) {
   const [activeTab, setActiveTab] = useState("all");
   const [view, setView] = useState<"orders" | "consolidated">("orders");
@@ -205,14 +215,28 @@ export function OrderDashboardClient({
                             {order.collection_day}
                           </span>
                         </div>
-                        <WhatsAppOrderButtons
-                          customerName={order.customer.name}
-                          whatsappNumber={order.customer.whatsapp_number}
-                          items={order.order_item}
-                          collectionDay={order.collection_day}
-                          paymentStatus={order.payment_status}
-                          total={orderTotal}
-                        />
+                        <div className="flex items-center gap-1 mt-2 flex-wrap">
+                          <WhatsAppOrderButtons
+                            customerName={order.customer.name}
+                            whatsappNumber={order.customer.whatsapp_number}
+                            items={order.order_item}
+                            collectionDay={order.collection_day}
+                            paymentStatus={order.payment_status}
+                            total={orderTotal}
+                          />
+                          <EditOrderDialog
+                            orderId={order.id}
+                            weekId={weekId}
+                            customerName={order.customer.name}
+                            items={order.order_item}
+                            weekProducts={weekProducts}
+                          />
+                          <DeleteOrderButton
+                            orderId={order.id}
+                            weekId={weekId}
+                            customerName={order.customer.name}
+                          />
+                        </div>
                       </div>
                       <div className="shrink-0">
                         <OrderNotes

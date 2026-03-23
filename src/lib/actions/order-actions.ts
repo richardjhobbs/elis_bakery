@@ -133,3 +133,60 @@ export async function updateOrderNotes(
   revalidatePath(`/admin/weeks/${weekId}/orders`);
   return { success: true };
 }
+
+export async function deleteOrder(orderId: string, weekId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Unauthorized");
+
+  const { error } = await supabase.from("order").delete().eq("id", orderId);
+
+  if (error) return { error: error.message };
+
+  revalidatePath(`/admin/weeks/${weekId}/orders`);
+  return { success: true };
+}
+
+export async function updateOrderItems(
+  orderId: string,
+  weekId: string,
+  items: { product_id: string; quantity: number }[]
+) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("Unauthorized");
+
+  // Delete existing items
+  const { error: deleteError } = await supabase
+    .from("order_item")
+    .delete()
+    .eq("order_id", orderId);
+
+  if (deleteError) return { error: deleteError.message };
+
+  // Insert new items (only non-zero quantities)
+  const newItems = items
+    .filter((i) => i.quantity > 0)
+    .map((i) => ({
+      order_id: orderId,
+      product_id: i.product_id,
+      quantity: i.quantity,
+    }));
+
+  if (newItems.length === 0) {
+    return { error: "Order must have at least one item." };
+  }
+
+  const { error: insertError } = await supabase
+    .from("order_item")
+    .insert(newItems);
+
+  if (insertError) return { error: insertError.message };
+
+  revalidatePath(`/admin/weeks/${weekId}/orders`);
+  return { success: true };
+}
