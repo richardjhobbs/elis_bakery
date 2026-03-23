@@ -34,5 +34,5 @@ export function formatWhatsAppLink(
 /** Link to message Eli's Bakery WhatsApp */
 export function formatBakeryWhatsAppLink(message?: string): string {
   const encoded = message ? encodeURIComponent(message) : "";
-  return `https://api.whatsapp.com/send?phone=6590181742${encoded ? `&text=${encoded}` : ""}`;
+  return `https://api.whatsapp.com/send?phone=6596142321${encoded ? `&text=${encoded}` : ""}`;
 }
