@@ -122,10 +122,10 @@ export default async function ConfirmationPage({
           </p>
         </div>
 
-        {/* WhatsApp link */}
+        {/* WhatsApp link — message Eli's Bakery */}
         <a
-          href={`https://wa.me/65${customer?.whatsapp_number ? "" : ""}?text=${encodeURIComponent(
-            `Hi! I've just placed an order (${formatCurrency(total)}).`
+          href={`https://api.whatsapp.com/send?phone=6596142321&text=${encodeURIComponent(
+            `Hi! I'm ${customer?.name}. I've just placed an order (${formatCurrency(total)}).`
           )}`}
           target="_blank"
           rel="noopener noreferrer"

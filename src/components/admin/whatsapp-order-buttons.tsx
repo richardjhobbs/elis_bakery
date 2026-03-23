@@ -74,7 +74,7 @@ function WhatsAppMessageSheet({
 
   const handleSend = () => {
     const encoded = encodeURIComponent(editedMessage);
-    window.open(`https://wa.me/65${whatsappNumber}?text=${encoded}`, "_blank");
+    window.open(`https://api.whatsapp.com/send?phone=65${whatsappNumber}&text=${encoded}`, "_blank");
   };
 
   return (
@@ -174,7 +174,7 @@ export function WhatsAppOrderButtons({
 
         {/* Direct WhatsApp link */}
         <a
-          href={`https://wa.me/65${whatsappNumber}`}
+          href={`https://api.whatsapp.com/send?phone=65${whatsappNumber}`}
           target="_blank"
           rel="noopener noreferrer"
         >
