@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { PublicHeader } from "@/components/layout/public-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils";
-import { CheckCircle, MessageCircle, CreditCard } from "lucide-react";
+import { CheckCircle, MessageCircle } from "lucide-react";
 import { InstagramLink } from "@/components/ui/instagram-link";
 
 interface OrderItemRow {
@@ -109,40 +109,31 @@ export default async function ConfirmationPage({
           </CardContent>
         </Card>
 
-        {/* Payment instructions */}
-        <Card className="mt-4">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <CreditCard className="h-4 w-4 text-brown-700" />
-              <h3 className="font-medium text-brown-800">Payment</h3>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              Please PayNow{" "}
-              <span className="font-semibold text-foreground">
-                {formatCurrency(total)}
-              </span>{" "}
-              to complete your order. Once paid, send a screenshot via WhatsApp
-              so we can confirm your payment.
-            </p>
-          </CardContent>
-        </Card>
+        {/* Thank you message */}
+        <div className="mt-6 text-center space-y-2">
+          <p className="text-brown-800 font-medium">
+            Thanks for your order
+          </p>
+          <p className="text-sm text-muted-foreground">
+            We will be in touch soon with details for payment and collection.
+          </p>
+          <p className="text-sm text-muted-foreground mt-2">
+            Love from Wendy and Teresa
+          </p>
+        </div>
 
         {/* WhatsApp link */}
         <a
           href={`https://wa.me/65${customer?.whatsapp_number ? "" : ""}?text=${encodeURIComponent(
-            `Hi Eli! I've just placed an order (${formatCurrency(total)}). Sending payment screenshot shortly!`
+            `Hi! I've just placed an order (${formatCurrency(total)}).`
           )}`}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-4 flex items-center justify-center gap-2 w-full rounded-lg bg-[#25D366] hover:bg-[#1da851] text-white py-3 px-4 font-medium transition-colors"
         >
           <MessageCircle className="h-5 w-5" />
-          Message Eli on WhatsApp
+          Message us on WhatsApp
         </a>
-
-        <p className="text-center text-sm text-muted-foreground mt-6">
-          We&apos;ll confirm your order and let you know pickup details! 🧁
-        </p>
 
         <div className="text-center mt-4">
           <InstagramLink />
