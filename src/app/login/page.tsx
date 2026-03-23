@@ -29,7 +29,7 @@ export default function LoginPage() {
         <CardHeader className="text-center space-y-2 pb-2">
           <div className="flex justify-center">
             <Image
-              src="/logo.jpg"
+              src="/logo.png"
               alt="Eli's Artisan Bakery logo"
               width={80}
               height={80}

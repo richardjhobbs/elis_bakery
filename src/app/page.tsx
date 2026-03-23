@@ -24,7 +24,7 @@ export default async function HomePage() {
       </div>
       <main className="flex-1 flex flex-col items-center justify-center px-4 text-center">
         <Image
-          src="/logo.jpg"
+          src="/logo.png"
           alt="Eli's Artisan Bakery logo"
           width={160}
           height={160}

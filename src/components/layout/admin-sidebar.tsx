@@ -66,7 +66,7 @@ export function AdminSidebar() {
           </SheetTrigger>
           <SheetContent side="left" className="w-64 p-4">
             <div className="mb-6 flex items-center gap-3">
-              <Image src="/logo.jpg" alt="Eli's Bakery" width={40} height={40} className="rounded-full" />
+              <Image src="/logo.png" alt="Eli's Bakery" width={40} height={40} className="rounded-full" />
               <h2 className="font-display text-2xl text-brown-700">
                 Eli&apos;s Bakery
               </h2>
@@ -74,7 +74,7 @@ export function AdminSidebar() {
             <NavLinks onNavigate={() => setOpen(false)} />
           </SheetContent>
         </Sheet>
-        <Image src="/logo.jpg" alt="Eli's Bakery" width={32} height={32} className="rounded-full" />
+        <Image src="/logo.png" alt="Eli's Bakery" width={32} height={32} className="rounded-full" />
         <h1 className="font-display text-xl text-brown-700">
           Eli&apos;s Bakery
         </h1>
@@ -84,7 +84,7 @@ export function AdminSidebar() {
       <aside className="hidden md:flex md:w-56 md:flex-col md:fixed md:inset-y-0 border-r bg-card">
         <div className="flex flex-col gap-6 p-4">
           <div className="flex items-center gap-3">
-            <Image src="/logo.jpg" alt="Eli's Bakery" width={44} height={44} className="rounded-full" />
+            <Image src="/logo.png" alt="Eli's Bakery" width={44} height={44} className="rounded-full" />
             <div>
               <h2 className="font-display text-xl text-brown-700">
                 Eli&apos;s Bakery

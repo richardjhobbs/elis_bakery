@@ -12,7 +12,7 @@ export function PublicHeader() {
       </h1>
       <div className="flex justify-center my-3">
         <Image
-          src="/logo.jpg"
+          src="/logo.png"
           alt="Eli's Artisan Bakery logo"
           width={80}
           height={80}
