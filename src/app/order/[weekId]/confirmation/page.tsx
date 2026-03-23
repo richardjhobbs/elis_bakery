@@ -129,7 +129,7 @@ export default async function ConfirmationPage({
 
         {/* WhatsApp link — message Eli's Bakery */}
         <a
-          href={`https://api.whatsapp.com/send?phone=6596142321&text=${encodeURIComponent(whatsAppMessage)}`}
+          href={`https://api.whatsapp.com/send?phone=6590181742&text=${encodeURIComponent(whatsAppMessage)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-4 flex items-center justify-center gap-2 w-full rounded-lg bg-[#25D366] hover:bg-[#1da851] text-white py-3 px-4 font-medium transition-colors"
