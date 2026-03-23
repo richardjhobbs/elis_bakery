@@ -44,7 +44,10 @@ export default async function ConfirmationPage({
     .single();
 
   const orderItems = (order.order_item as unknown as OrderItemRow[]) || [];
-  const customer = order.customer as unknown as OrderCustomer;
+  const rawCustomer = order.customer as unknown;
+  const customer: OrderCustomer = Array.isArray(rawCustomer)
+    ? rawCustomer[0]
+    : (rawCustomer as OrderCustomer);
   const total = orderItems.reduce(
     (sum, item) => sum + item.quantity * item.product.price,
     0
@@ -125,7 +128,7 @@ export default async function ConfirmationPage({
         {/* WhatsApp link — message Eli's Bakery */}
         <a
           href={`https://api.whatsapp.com/send?phone=6596142321&text=${encodeURIComponent(
-            `Hi! I'm ${customer?.name}. I've just placed an order (${formatCurrency(total)}).`
+            `Hi! I'm ${customer?.name || "a customer"}. I've just placed an order. Looking forward to receiving!`
           )}`}
           target="_blank"
           rel="noopener noreferrer"
