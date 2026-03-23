@@ -46,7 +46,7 @@ ${itemLines}
 Total: ${formatCurrency(total)}
 
 Collection: ${day} from 3pm to 5pm, at the usual address
-Payment: Please pay via PayNow to mobile no. 9018 1742 and reference your payment as "bakery goods".
+Payment: Please pay via PayNow to mobile no. 9018 1742 and reference your payment as *Eli's Bakery*.
 If possible, please send a screenshot when completed.
 
 Many thanks
