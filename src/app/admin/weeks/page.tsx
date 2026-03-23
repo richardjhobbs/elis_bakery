@@ -5,7 +5,6 @@ import { Card, CardContent } from "@/components/ui/card";
 import { WeekStatusBadge } from "@/components/shared/status-badge";
 import { Plus } from "lucide-react";
 import { formatDate } from "@/lib/utils";
-import { CopyLinkButton } from "@/components/admin/copy-link-button";
 import type { Week } from "@/lib/types/database";
 
 export default async function WeeksPage() {
@@ -71,7 +70,6 @@ export default async function WeeksPage() {
                         Orders
                       </Button>
                     </Link>
-                    <CopyLinkButton weekId={week.id} />
                   </div>
                 </div>
               </CardContent>
