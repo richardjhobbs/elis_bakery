@@ -11,10 +11,6 @@ interface OrderItemRow {
   product: { name: string; price: number; unit_label: string };
 }
 
-interface OrderCustomer {
-  name: string;
-  whatsapp_number: string;
-}
 
 export default async function ConfirmationPage({
   params,
@@ -30,12 +26,19 @@ export default async function ConfirmationPage({
   const { data: order } = await supabase
     .from("order")
     .select(
-      "*, customer:customer_id(name, whatsapp_number), order_item(quantity, product:product_id(name, price, unit_label))"
+      "*, order_item(quantity, product:product_id(name, price, unit_label))"
     )
     .eq("id", searchParams.orderId)
     .single();
 
   if (!order) notFound();
+
+  // Fetch customer separately for reliability
+  const { data: customer } = await supabase
+    .from("customer")
+    .select("name, whatsapp_number")
+    .eq("id", order.customer_id)
+    .single();
 
   const { data: week } = await supabase
     .from("week")
@@ -44,10 +47,6 @@ export default async function ConfirmationPage({
     .single();
 
   const orderItems = (order.order_item as unknown as OrderItemRow[]) || [];
-  const rawCustomer = order.customer as unknown;
-  const customer: OrderCustomer = Array.isArray(rawCustomer)
-    ? rawCustomer[0]
-    : (rawCustomer as OrderCustomer);
   const customerName = customer?.name || "a customer";
   const total = orderItems.reduce(
     (sum, item) => sum + item.quantity * item.product.price,
