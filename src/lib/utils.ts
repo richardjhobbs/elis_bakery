@@ -22,12 +22,13 @@ export function formatDate(date: Date | string): string {
   });
 }
 
+/** WhatsApp link for admin (desktop) — uses web.whatsapp.com to connect to existing session */
 export function formatWhatsAppLink(
   number: string,
   message?: string
 ): string {
   const encoded = message ? encodeURIComponent(message) : "";
-  return `https://api.whatsapp.com/send?phone=65${number}${encoded ? `&text=${encoded}` : ""}`;
+  return `https://web.whatsapp.com/send?phone=65${number}${encoded ? `&text=${encoded}` : ""}`;
 }
 
 /** Link to message Eli's Bakery WhatsApp */

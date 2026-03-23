@@ -95,7 +95,7 @@ function MessageEditor({
 
   const handleWhatsAppOpen = () => {
     const encoded = encodeURIComponent(message);
-    window.open(`https://api.whatsapp.com/send?text=${encoded}`, "_blank");
+    window.open(`https://web.whatsapp.com/send?text=${encoded}`, "_blank");
   };
 
   return (

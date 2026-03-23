@@ -53,6 +53,24 @@ export default async function ConfirmationPage({
     0
   );
 
+  // Build WhatsApp message with full order details
+  const orderLines = orderItems
+    .map((item) => `${item.product.name} x${item.quantity}`)
+    .join("\n");
+  const whatsAppMessage = `Hi ${customerName}
+
+Thank you for your order this week:
+${orderLines}
+Total: ${formatCurrency(total)}
+
+Collection: Friday from 3pm to 5pm, at the usual address
+Payment: Please pay via PayNow to mobile no. 9614 2321 and reference your payment as "bakery goods".
+If possible, please send a screenshot when completed.
+
+Many thanks
+Wendy and Teresa
+Eli's Artisan Bakery`;
+
   return (
     <div className="min-h-screen bg-background">
       <PublicHeader />
@@ -127,9 +145,7 @@ export default async function ConfirmationPage({
 
         {/* WhatsApp link — message Eli's Bakery */}
         <a
-          href={`https://api.whatsapp.com/send?phone=6596142321&text=${encodeURIComponent(
-            `Hi, it's ${customerName}. I've just placed an order. Looking forward to receiving!`
-          )}`}
+          href={`https://api.whatsapp.com/send?phone=6596142321&text=${encodeURIComponent(whatsAppMessage)}`}
           target="_blank"
           rel="noopener noreferrer"
           className="mt-4 flex items-center justify-center gap-2 w-full rounded-lg bg-[#25D366] hover:bg-[#1da851] text-white py-3 px-4 font-medium transition-colors"
