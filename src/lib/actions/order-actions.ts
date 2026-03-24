@@ -2,6 +2,8 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
+import { Resend } from "resend";
+import { formatCurrency } from "@/lib/utils";
 
 interface CreateOrderInput {
   weekId: string;
@@ -9,6 +11,66 @@ interface CreateOrderInput {
   whatsappNumber: string;
   collectionDay: string;
   items: { product_id: string; quantity: number }[];
+}
+
+async function sendOrderNotification(
+  input: CreateOrderInput,
+) {
+  const resendKey = process.env.RESEND_API_KEY;
+  if (!resendKey) return; // silently skip if not configured
+
+  try {
+    const supabase = await createClient();
+
+    // Fetch product details for the order items
+    const productIds = input.items.map((i) => i.product_id);
+    const { data: products } = await supabase
+      .from("product")
+      .select("id, name, price")
+      .in("id", productIds);
+
+    const productMap = new Map(
+      (products || []).map((p) => [p.id, p])
+    );
+
+    let total = 0;
+    const itemLines = input.items
+      .filter((i) => i.quantity > 0)
+      .map((i) => {
+        const p = productMap.get(i.product_id);
+        const name = p?.name || "Unknown";
+        const price = p?.price || 0;
+        const lineTotal = i.quantity * price;
+        total += lineTotal;
+        return `${name} ×${i.quantity} — ${formatCurrency(lineTotal)}`;
+      });
+
+    const resend = new Resend(resendKey);
+
+    await resend.emails.send({
+      from: "Eli's Bakery Orders <onboarding@resend.dev>",
+      to: [
+        "wendynatalie@icloud.com",
+        "teresa.hobson.hobbs@gmail.com",
+      ],
+      subject: `New order from ${input.customerName}`,
+      html: `
+        <h2>New Order Received</h2>
+        <p><strong>Customer:</strong> ${input.customerName}</p>
+        <p><strong>WhatsApp:</strong> ${input.whatsappNumber}</p>
+        <p><strong>Collection:</strong> ${input.collectionDay}</p>
+        <hr/>
+        <p><strong>Items:</strong></p>
+        <ul>${itemLines.map((l) => `<li>${l}</li>`).join("")}</ul>
+        <p><strong>Total: ${formatCurrency(total)}</strong></p>
+        <hr/>
+        <p><a href="https://elisbakery.shop/admin/weeks/${input.weekId}/orders">View in admin</a></p>
+      `,
+    });
+  } catch {
+    // Don't let email failure break order placement
+    console.error("Failed to send order notification email");
+  }
 }
 
 export async function createOrder(input: CreateOrderInput) {
@@ -31,6 +93,10 @@ export async function createOrder(input: CreateOrderInput) {
   }
 
   revalidatePath(`/admin/weeks/${input.weekId}/orders`);
+
+  // Send email notification (fire and forget — don't block the response)
+  sendOrderNotification(input);
+
   return { error: null, orderId: data as string };
 }
 
