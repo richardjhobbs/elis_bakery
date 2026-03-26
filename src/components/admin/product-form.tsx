@@ -241,16 +241,30 @@ export function ProductFormDialog({
               />
             </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="max_qty">Max Quantity (optional)</Label>
-            <Input
-              id="max_qty"
-              name="max_qty"
-              type="number"
-              min="1"
-              defaultValue={product?.max_qty || ""}
-              placeholder="Leave empty for unlimited"
-            />
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="max_qty">Max Orders (optional)</Label>
+              <Input
+                id="max_qty"
+                name="max_qty"
+                type="number"
+                min="1"
+                defaultValue={product?.max_qty || ""}
+                placeholder="Unlimited"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="units_per_order">Units per Order</Label>
+              <Input
+                id="units_per_order"
+                name="units_per_order"
+                type="number"
+                min="1"
+                defaultValue={product?.units_per_order || 1}
+                placeholder="1"
+                required
+              />
+            </div>
           </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}

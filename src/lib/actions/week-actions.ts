@@ -154,6 +154,7 @@ export async function addProduct(weekId: string, formData: FormData) {
   );
   const image_url = (formData.get("image_url") as string) || null;
   const category = (formData.get("category") as string) || "other";
+  const units_per_order = parseInt((formData.get("units_per_order") as string) || "1") || 1;
 
   const { error } = await supabase.from("product").insert({
     week_id: weekId,
@@ -165,6 +166,7 @@ export async function addProduct(weekId: string, formData: FormData) {
     display_order,
     image_url,
     category,
+    units_per_order,
   });
 
   if (error) return { error: error.message };
@@ -195,10 +197,11 @@ export async function updateProduct(
   );
   const image_url = (formData.get("image_url") as string) || null;
   const category = (formData.get("category") as string) || "other";
+  const units_per_order = parseInt((formData.get("units_per_order") as string) || "1") || 1;
 
   const { error } = await supabase
     .from("product")
-    .update({ name, description, price, unit_label, max_qty, display_order, image_url, category })
+    .update({ name, description, price, unit_label, max_qty, display_order, image_url, category, units_per_order })
     .eq("id", productId);
 
   if (error) return { error: error.message };
@@ -254,7 +257,7 @@ export async function copyProductsFromLastWeek(weekId: string) {
 
   const { data: products } = await supabase
     .from("product")
-    .select("name, description, price, unit_label, max_qty, display_order, image_url, category")
+    .select("name, description, price, unit_label, max_qty, display_order, image_url, category, units_per_order")
     .eq("week_id", previousWeeks[0].id)
     .order("display_order");
 

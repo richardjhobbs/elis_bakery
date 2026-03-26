@@ -6,7 +6,7 @@ import type { ProductCategory } from "@/lib/types/database";
 
 interface OrderItemRow {
   quantity: number;
-  product: { name: string; price: number; category: string };
+  product: { name: string; price: number; category: string; units_per_order: number };
 }
 
 interface OrderRow {
@@ -16,7 +16,7 @@ interface OrderRow {
   order_item: OrderItemRow[];
 }
 
-type ItemInfo = { qty: number; category: ProductCategory };
+type ItemInfo = { qty: number; category: ProductCategory; unitsPerOrder: number };
 
 function sortByCategory(entries: [string, ItemInfo][]) {
   return entries.sort((a, b) => {
@@ -57,7 +57,11 @@ function renderItems(
     doc.setTextColor(30, 30, 30);
     doc.text(name, 28, y);
     doc.setFont("helvetica", "bold");
-    doc.text(`× ${info.qty}`, pageWidth - 30, y, { align: "right" });
+    const totalUnits = info.qty * info.unitsPerOrder;
+    const qtyText = info.unitsPerOrder > 1
+      ? `× ${info.qty}  (${totalUnits} units)`
+      : `× ${info.qty}`;
+    doc.text(qtyText, pageWidth - 30, y, { align: "right" });
 
     // Checkbox
     doc.setDrawColor(180, 180, 180);
@@ -102,7 +106,7 @@ export async function GET(request: NextRequest) {
   const { data: rawOrders } = await supabase
     .from("order")
     .select(
-      "id, collection_day, customer:customer_id(name), order_item(quantity, product:product_id(name, price, category))"
+      "id, collection_day, customer:customer_id(name), order_item(quantity, product:product_id(name, price, category, units_per_order))"
     )
     .eq("week_id", weekId)
     .order("created_at");
@@ -123,14 +127,15 @@ export async function GET(request: NextRequest) {
     order.order_item.forEach((item) => {
       const name = item.product.name;
       const cat = (item.product.category || "other") as ProductCategory;
+      const upo = item.product.units_per_order || 1;
 
       if (!dayTotals[day][name]) {
-        dayTotals[day][name] = { qty: 0, category: cat };
+        dayTotals[day][name] = { qty: 0, category: cat, unitsPerOrder: upo };
       }
       dayTotals[day][name].qty += item.quantity;
 
       if (!overallTotals[name]) {
-        overallTotals[name] = { qty: 0, category: cat };
+        overallTotals[name] = { qty: 0, category: cat, unitsPerOrder: upo };
       }
       overallTotals[name].qty += item.quantity;
 

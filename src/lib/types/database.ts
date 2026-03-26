@@ -37,6 +37,7 @@ export type Product = {
   display_order: number;
   image_url: string | null;
   category: ProductCategory;
+  units_per_order: number;
   created_at: string;
 };
 
