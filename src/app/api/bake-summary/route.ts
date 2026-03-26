@@ -12,6 +12,7 @@ interface OrderItemRow {
 interface OrderRow {
   id: string;
   collection_day: string;
+  customer: { name: string };
   order_item: OrderItemRow[];
 }
 
@@ -101,7 +102,7 @@ export async function GET(request: NextRequest) {
   const { data: rawOrders } = await supabase
     .from("order")
     .select(
-      "id, collection_day, order_item(quantity, product:product_id(name, price, category))"
+      "id, collection_day, customer:customer_id(name), order_item(quantity, product:product_id(name, price, category))"
     )
     .eq("week_id", weekId)
     .order("created_at");
@@ -111,10 +112,13 @@ export async function GET(request: NextRequest) {
   // Build summary data: totals per product, split by day
   const dayTotals: Record<string, Record<string, ItemInfo>> = {};
   const overallTotals: Record<string, ItemInfo> = {};
+  // Track customer breakdown per product: { "Sourdough": [{ name: "Teresa", qty: 2 }, ...] }
+  const productCustomers: Record<string, { name: string; qty: number }[]> = {};
 
   orders.forEach((order) => {
     const day = order.collection_day || "Unspecified";
     if (!dayTotals[day]) dayTotals[day] = {};
+    const customerName = (order.customer as unknown as { name: string })?.name || "Unknown";
 
     order.order_item.forEach((item) => {
       const name = item.product.name;
@@ -129,6 +133,10 @@ export async function GET(request: NextRequest) {
         overallTotals[name] = { qty: 0, category: cat };
       }
       overallTotals[name].qty += item.quantity;
+
+      // Customer breakdown
+      if (!productCustomers[name]) productCustomers[name] = [];
+      productCustomers[name].push({ name: customerName, qty: item.quantity });
     });
   });
 
@@ -211,6 +219,58 @@ export async function GET(request: NextRequest) {
 
   const sortedOverall = sortByCategory(Object.entries(overallTotals));
   y = renderItems(doc, sortedOverall, y, pageWidth);
+
+  // Customer breakdown per product
+  y += 8;
+  doc.setDrawColor(61, 117, 119);
+  doc.setLineWidth(0.5);
+  doc.line(20, y, pageWidth - 20, y);
+  y += 10;
+
+  doc.setFontSize(14);
+  doc.setFont("helvetica", "bold");
+  doc.setTextColor(61, 117, 119);
+  doc.text("Order Details by Customer", 20, y);
+  y += 3;
+  doc.setDrawColor(61, 117, 119);
+  doc.setLineWidth(0.4);
+  doc.line(20, y, pageWidth - 20, y);
+  y += 8;
+
+  sortedOverall.forEach(([productName]) => {
+    const customers = productCustomers[productName] || [];
+    if (customers.length === 0) return;
+
+    // Check if we need a new page
+    if (y > 260) {
+      doc.addPage();
+      y = 20;
+    }
+
+    // Product name
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(45, 95, 97);
+    doc.text(productName, 22, y);
+    y += 6;
+
+    // Customer lines
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(60, 60, 60);
+
+    customers.forEach(({ name, qty }) => {
+      if (y > 275) {
+        doc.addPage();
+        y = 20;
+      }
+      doc.text(`${name}`, 28, y);
+      doc.text(`× ${qty}`, pageWidth - 30, y, { align: "right" });
+      y += 5;
+    });
+
+    y += 4;
+  });
 
   const pdfBuffer = Buffer.from(doc.output("arraybuffer"));
 
